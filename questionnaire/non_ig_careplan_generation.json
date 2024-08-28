@@ -1,0 +1,49 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "6b972208-dcf2-442e-b02f-d0eca48b354a",
+  "title": "Non IG Immunization CarePlan Enrollment",
+  "description": "Non IG Immunization CarePlan Enrollment",
+  "version": "0.0.1",
+  "status": "active",
+  "meta": {
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "date": "2023-10-12T00:00:00+03:00",
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap",
+      "valueCanonical": "https://fhir.demo.smartregister.org/fhir/StructureMap/f258105f-bb75-4fad-b60c-bfa0442682bb"
+    }
+  ],
+  "item": [
+    {
+      "type": "choice",
+      "linkId": "f30cf5c6-0ae2-41fa-8788-123d55737dcb",
+      "text": "Do you want to enroll the client an Immunization CarePlan?",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "display": "Yes",
+            "code": "yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "display": "No",
+            "code": "no"
+          }
+        }
+      ]
+    }
+  ]
+}

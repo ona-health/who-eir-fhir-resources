@@ -1,0 +1,2196 @@
+{
+  "resourceType": "StructureMap",
+  "id": "0863635d-c78f-489c-9ffa-e49e8b58f576",
+  "text": {
+    "status": "additional",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><pre>map &quot;http://hl7.org/fhir/StructureMap/0863635d-c78f-489c-9ffa-e49e8b58f576&quot; = 'Measles Complete Vaccine workflow'\n\nuses &quot;http://hl7.org/fhir/StructureDefinition/Parameters&quot; as source\nuses &quot;http://hl7.org/fhir/StructureDefinition/CarePlan&quot; as target\n\ngroup childImmunizationSchedule(source src : Parameters, target careplan: CarePlan) {\n    src -&gt; evaluate(src, $this.parameter.where(name='subject').resource) as subject,\n        evaluate(src, $this.parameter.where(name='definition').resource) as definition,\n        evaluate(src, $this.parameter.where(name='depends-on').resource.entry.where(resource is QuestionnaireResponse).resource) as questionnaireResponse,\n        evaluate(src, $this.parameter.where(name='period').value) as period,\n        evaluate(src, $this.parameter.where(name='version').value) as version\n        then extractImmunization(period, version, subject, definition, questionnaireResponse, careplan) &quot;r_careplan&quot;;\n}\n\ngroup extractImmunization(\n    source period: Period,\n    source version: Integer,\n    source subject : Patient,\n    source definition: ActivityDefinition,\n    source questionnaireResponse: QuestionnaireResponse,\n    target careplan: CarePlan) {\n\n    // create activity.detail of type/kind Task for this Task if not exists\n    subject where(careplan.activity.where(detail.kind = 'MedicationRequest').exists().not()) -&gt; careplan.activity = create('CarePlan_Activity') as activity then {\n        subject -&gt; activity.detail = create('CarePlan_ActivityDetail') as ActivityDefinition then {\n            subject -&gt; ActivityDefinition.kind = 'MedicationRequest' &quot;rule_activity_detail_data&quot;;\n        } &quot;rule_activity_detail&quot;;\n    } &quot;rule_careplan_activity&quot;;\n\n    questionnaireResponse.item as questionnaireResponseItem where(linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03' and answer.value.exists()) then {\n        questionnaireResponse.item as questionnaireResponseItem where(linkId = '1e1f0f3b-58de-41b4-8db0-6c4b033cce57' and answer.exists()) then {\n\n            questionnaireResponse.item as questionnaireResponseItem where(linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03' and answer.where(value.code = 'yes').exists()) then {\n                subject then generateImmunization(period, version, subject, definition, questionnaireResponse, careplan) &quot;r_medication_request_consent_stock&quot;;\n                subject then updateMedicationRequest(period, version, subject, definition, questionnaireResponse, careplan) &quot;r_medication_request_stock&quot;;\n            } &quot;questionnaire_response_item_check_consent&quot;;\n        } &quot;questionnaire_response_item_answer_two_available&quot;;\n\n        questionnaireResponse.item as questionnaireResponseItem where(linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03' and answer.where(value.code = 'no').exists()) then {\n            subject then extractMedicationRequestPlanOnHold(period, version, subject, definition, questionnaireResponse, careplan) &quot;r_medication_request_consent&quot;;\n        } &quot;questionnaire_response_item_consent_no&quot;;\n    } &quot;questionnaire_response_item_answer_available&quot;;\n}\n\ngroup generateImmunization(\n    source period: Period,\n    source version: Integer,\n    source subject : Patient,\n    source definition: ActivityDefinition,\n    source questionnaireResponse: QuestionnaireResponse,\n    target careplan: CarePlan) {\n\n    subject -&gt; create('Immunization') as immunization then {\n        subject -&gt; immunization.id = uuid() &quot;rule_immunization_id&quot;;\n        subject -&gt; immunization.status = 'completed' &quot;rule_immunization_status&quot;;\n        subject -&gt; immunization.vaccineCode = evaluate(definition, $this.product) &quot;immunization_vaccineCode&quot;;\n        subject -&gt; immunization.vaccineCode = create('CodeableConcept') as reasonCode then {\n            subject -&gt; reasonCode.coding = c(&quot;http://snomed.info/sct&quot;, &quot;33879002&quot;) as reasonCodeCoding then {\n                subject -&gt; reasonCodeCoding.display = &quot;Administration of vaccine to produce active immunity (procedure)&quot; &quot;rule_immunization_reasonCode_coding_display&quot;;\n            } &quot;rule_immunization_reasonCode_coding&quot;;\n            subject -&gt; reasonCode.text = &quot;Administration of vaccine to produce active immunity (procedure)&quot; &quot;rule_immunization_reasonCode_text&quot;;\n        } &quot;rule_immunization_reasonCode&quot;;\n\n        subject -&gt; immunization.performer = create('Immunization_Performer') as performer then {\n            subject -&gt; performer.actor = evaluate(subject, $this.generalPractitioner.first()) &quot;rule_immunization_performer_actor&quot;;\n        } &quot;rule_immunization_performer&quot;;\n\n        //adding the dosage number from QR to the immunization protocol applied[x].doseNumber\n        subject -&gt; immunization.protocolApplied = create('Immunization_AppliedProtocol') as protocolApplied then {\n            subject -&gt; protocolApplied.doseNumber = evaluate(subject, &quot;1&quot;) &quot;rule_protocol_applied_dosage_number&quot;;\n            subject -&gt; protocolApplied.seriesDoses = evaluate(subject, &quot;1&quot;) &quot;rule_protocol_applied_dosage_number&quot;;\n        } &quot;rule_protocol_applied_value&quot;;\n\n        subject -&gt; immunization.patient = create('Reference') as patientReference, patientReference.reference = evaluate(subject, $this.id.replaceMatches('/_history/.*', '')) &quot;rule_immunization_patient&quot;;\n        subject -&gt; immunization.occurrence = evaluate(questionnaireResponse, $this.item.where(linkId = '1e1f0f3b-58de-41b4-8db0-6c4b033cce57').answer.value.toString() + 'T00:00:00.00Z') &quot;rule_immunization_occurrenceDateTime&quot;;\n\n        // add MR to careplan irrespective of its validity\n        subject then {\n            subject -&gt; evaluate(careplan, activity.where(detail.kind = 'MedicationRequest')) as activity, activity.outcomeReference = reference(immunization) &quot;rule_careplan_task_reference&quot;;\n             subject -&gt; careplan.contained = immunization &quot;rule_add_task&quot;;\n        } &quot;rule_careplan_task&quot;;\n    } &quot;rule_immunization&quot;;\n} \n\n\ngroup updateMedicationRequest (\n    source period: Period,\n    source version: Integer,\n    source subject : Patient,\n    source definition: ActivityDefinition,\n    source questionnaireResponse: QuestionnaireResponse,\n    target careplan: CarePlan) {\n\n    subject -&gt; create('MedicationRequest') as medicationRequestOrder then {\n        subject -&gt; medicationRequestOrder.id =  create('id') as id then {\n                subject -&gt; id.value = evaluate(questionnaireResponse, $this.item.where(linkId = 'c1d8fed1-ff36-43b6-8061-22561154b13b').answer.value) &quot;rule_update_medication_request_value&quot;;\n            } &quot;rule_update_medication_request_value_id&quot;;\n        subject -&gt; medicationRequestOrder.status = 'completed' &quot;r_medication_request_status&quot;;\n        subject -&gt; medicationRequestOrder.intent = 'order' &quot;r_medication_request_intent&quot;;\n        subject -&gt; medicationRequestOrder.doNotPerform = false &quot;r_medication_request_doNotPerform&quot;;\n        subject -&gt; medicationRequestOrder.authoredOn = evaluate(subject, now()) &quot;r_medication_request_authoredOn&quot;;\n        subject -&gt; medicationRequestOrder.recorder = evaluate(subject, $this.generalPractitioner.first()) &quot;r_medication_request_recorder&quot;;\n        subject -&gt; medicationRequestOrder.medication = evaluate(definition, code) &quot;r_task_data&quot;;\n        subject -&gt; medicationRequestOrder.medication = evaluate(definition, product) &quot;r_task_data&quot;;\n        subject -&gt; medicationRequestOrder.identifier = create('Identifier') as iden, iden.value = uuid(), iden.use = 'official' &quot;r_medication_request_identifier&quot;;\n        subject -&gt; medicationRequestOrder.subject = create('Reference') as patientReference, patientReference.reference = evaluate(subject, $this.id.replaceMatches('/_history/.*', '')) &quot;r_medication_request_subject&quot;;\n        subject -&gt; medicationRequestOrder.dispenseRequest = create('Dispense_Request') as dispenseRequest, dispenseRequest.validityPeriod = period &quot;r_medication_request_dispenseRequest&quot;;\n        subject -&gt; medicationRequestOrder.basedOn = create('Reference') as ref, ref.reference = evaluate(careplan, 'CarePlan/' + $this.id.replaceMatches('/_history/.*', '').replaceMatches('CarePlan/', '')) &quot;rule_update_flag_basedOn&quot;;\n\n        subject -&gt; medicationRequestOrder.reasonCode = create('CodeableConcept') as concept then {\n            subject -&gt; concept.coding = c(&quot;http://snomed.info/sct&quot;, &quot;1000001&quot;) as coding then {\n                subject -&gt; coding.display = 'Complete Immunization' &quot;r_en_cod_disp&quot;;\n            } &quot;r_en_cc_cod&quot;;\n            subject -&gt;  concept.text = 'Complete Immunization' &quot;r_en_cod_text&quot;;\n        } &quot;r_medication_request_reason_code&quot;;\n        subject then extractPeriod(subject, medicationRequestOrder) &quot;r_task_period_extraction&quot;;\n\n        // add MR to careplan irrespective of its validity\n        subject then {\n            subject -&gt; evaluate(careplan, activity.where(detail.kind = 'MedicationRequest')) as activity, activity.outcomeReference = reference(medicationRequestOrder) &quot;rule_careplan_task_reference&quot;;\n            subject -&gt; careplan.contained = medicationRequestOrder &quot;rule_add_task&quot;;\n        } &quot;rule_careplan_task&quot;;\n    } &quot;r_medication_request&quot;;\n}\n\ngroup extractMedicationRequestPlanOnHold(\n    source period: Period,\n    source version: Integer,\n    source subject : Patient,\n    source definition: ActivityDefinition,\n    source questionnaireResponse: QuestionnaireResponse,\n    target careplan: CarePlan) {\n\n    //or answer.where(value.code = 'DE166') or answer.where(value.code = 'DE167')\n    subject -&gt; create('MedicationRequest') as medicationRequestCancelledOrHold then {\n        subject -&gt; medicationRequestCancelledOrHold.id =  create('id') as id then {\n            subject -&gt; id.value = evaluate(questionnaireResponse, $this.item.where(linkId = 'c1d8fed1-ff36-43b6-8061-22561154b13b').answer.value) &quot;rule_update_medication_request_value&quot;;\n        } &quot;rule_update_medication_request_value_id&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.status = 'on-hold' &quot;r_medication_request_status&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.intent = 'plan' &quot;r_medication_request_intent&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.doNotPerform = false &quot;r_medication_request_doNotPerform&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.authoredOn = evaluate(subject, now()) &quot;r_medication_request_authoredOn&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.recorder = evaluate(subject, $this.generalPractitioner.first()) &quot;r_medication_request_recorder&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.medication = evaluate(definition, code) &quot;r_task_data&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.medication = evaluate(definition, product) &quot;r_task_data&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.identifier = create('Identifier') as iden, iden.value = uuid(), iden.use = 'official' &quot;r_medication_request_identifier&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.subject = create('Reference') as patientReference, patientReference.reference = evaluate(subject, $this.id.replaceMatches('/_history/.*', '')) &quot;r_medication_request_subject&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.dispenseRequest = create('Dispense_Request') as dispenseRequest, dispenseRequest.validityPeriod = period &quot;r_medication_request_dispenseRequest&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.basedOn = create('Reference') as ref, ref.reference = evaluate(careplan, 'CarePlan/' + $this.id.replaceMatches('/_history/.*', '').replaceMatches('CarePlan/', '')) &quot;rule_update_flag_basedOn&quot;;\n        subject -&gt; medicationRequestCancelledOrHold.supportingInformation = create('Reference') as questionnaireReference, questionnaireReference.reference = 'Questionnaire/caebc6b4-7861-42be-8925-12c4a6bad921' &quot;r_medication_request_supporting_information&quot;;  \n\n        subject -&gt; medicationRequestCancelledOrHold.reasonCode = create('CodeableConcept') as concept then {\n            subject -&gt; concept.coding = c(&quot;http://snomed.info/sct&quot;, &quot;1000001&quot;) as coding then {\n                subject -&gt; coding.display = 'Complete Immunization' &quot;r_en_cod_disp&quot;;\n            } &quot;r_en_cc_cod&quot;;\n            subject -&gt;  concept.text = 'Complete Immunization' &quot;r_en_cod_text&quot;;\n        } &quot;r_medication_request_reason_code&quot;;\n        subject then extractPeriod(subject, medicationRequestCancelledOrHold) &quot;r_task_period_extraction&quot;;\n\n        // add MR to careplan irrespective of its validity\n        subject then {\n            subject -&gt; evaluate(careplan, activity.where(detail.kind = 'MedicationRequest')) as activity, activity.outcomeReference = reference(medicationRequestCancelledOrHold) &quot;rule_careplan_task_reference&quot;;\n            subject -&gt; careplan.contained = medicationRequestCancelledOrHold &quot;rule_add_task&quot;;\n        } &quot;rule_careplan_task&quot;;\n    } &quot;r_medication_request&quot;;\n}\n\ngroup extractPeriod(source subject: Patient, target medicationRequest: MedicationRequest) {\n    subject -&gt; evaluate(medicationRequest, $this.dispenseRequest) as dispenseRequest, evaluate(dispenseRequest, $this.validityPeriod.start) as start,\n        evaluate(dispenseRequest, $this.validityPeriod.end) as end then {\n        subject -&gt; create('Period') as period then {\n            subject -&gt; period.start = create('dateTime') as startDateTime,\n                startDateTime.value = evaluate(start, $this.value.substring(0,10) + 'T00:00:00.00Z') &quot;rule_period_start&quot;;\n\n            subject -&gt; period.end = create('dateTime') as endDateTime,\n                endDateTime.value = evaluate(end, $this.value.substring(0,10) + 'T00:00:00.00Z') &quot;rule_period_end&quot;;\n\n            subject -&gt; medicationRequest.dispenseRequest = create('Dispense_Request') as dispenseRequest, dispenseRequest.validityPeriod = period &quot;rule_execution_period&quot;;\n        } &quot;rule_period&quot;;\n    } &quot;rule_task_execution_period&quot;;\n}\n</pre></div>"
+  },
+  "url": "http://hl7.org/fhir/StructureMap/0863635d-c78f-489c-9ffa-e49e8b58f576",
+  "name": "Measles Complete Vaccine workflow",
+  "structure": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/Parameters",
+      "mode": "source"
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/CarePlan",
+      "mode": "target"
+    }
+  ],
+  "group": [
+    {
+      "name": "childImmunizationSchedule",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "src",
+          "type": "Parameters",
+          "mode": "source"
+        },
+        {
+          "name": "careplan",
+          "type": "CarePlan",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "r_careplan",
+          "source": [
+            {
+              "context": "src"
+            }
+          ],
+          "target": [
+            {
+              "variable": "subject",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "src"
+                },
+                {
+                  "valueString": "$this.parameter.where(name = 'subject').resource"
+                }
+              ]
+            },
+            {
+              "variable": "definition",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "src"
+                },
+                {
+                  "valueString": "$this.parameter.where(name = 'definition').resource"
+                }
+              ]
+            },
+            {
+              "variable": "questionnaireResponse",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "src"
+                },
+                {
+                  "valueString": "$this.parameter.where(name = 'depends-on').resource.entry.where(resource is QuestionnaireResponse).resource"
+                }
+              ]
+            },
+            {
+              "variable": "period",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "src"
+                },
+                {
+                  "valueString": "$this.parameter.where(name = 'period').value"
+                }
+              ]
+            },
+            {
+              "variable": "version",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "src"
+                },
+                {
+                  "valueString": "$this.parameter.where(name = 'version').value"
+                }
+              ]
+            }
+          ],
+          "dependent": [
+            {
+              "name": "extractImmunization",
+              "variable": [
+                "period",
+                "version",
+                "subject",
+                "definition",
+                "questionnaireResponse",
+                "careplan"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extractImmunization",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "period",
+          "type": "Period",
+          "mode": "source"
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "mode": "source"
+        },
+        {
+          "name": "subject",
+          "type": "Patient",
+          "mode": "source"
+        },
+        {
+          "name": "definition",
+          "type": "ActivityDefinition",
+          "mode": "source"
+        },
+        {
+          "name": "questionnaireResponse",
+          "type": "QuestionnaireResponse",
+          "mode": "source"
+        },
+        {
+          "name": "careplan",
+          "type": "CarePlan",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "rule_careplan_activity",
+          "source": [
+            {
+              "context": "subject",
+              "condition": "(careplan.activity.where(detail.kind = 'MedicationRequest').exists().not())"
+            }
+          ],
+          "target": [
+            {
+              "context": "careplan",
+              "contextType": "variable",
+              "element": "activity",
+              "variable": "activity",
+              "transform": "create",
+              "parameter": [
+                {
+                  "valueString": "CarePlan_Activity"
+                }
+              ]
+            }
+          ],
+          "rule": [
+            {
+              "name": "rule_activity_detail",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "activity",
+                  "contextType": "variable",
+                  "element": "detail",
+                  "variable": "ActivityDefinition",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "CarePlan_ActivityDetail"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_activity_detail_data",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "ActivityDefinition",
+                      "contextType": "variable",
+                      "element": "kind",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueString": "MedicationRequest"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "questionnaire_response_item_answer_available",
+          "source": [
+            {
+              "context": "questionnaireResponse",
+              "element": "item",
+              "variable": "questionnaireResponseItem",
+              "condition": "((linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03') and answer.value.exists())"
+            }
+          ],
+          "rule": [
+            {
+              "name": "questionnaire_response_item_answer_two_available",
+              "source": [
+                {
+                  "context": "questionnaireResponse",
+                  "element": "item",
+                  "variable": "questionnaireResponseItem",
+                  "condition": "((linkId = '1e1f0f3b-58de-41b4-8db0-6c4b033cce57') and answer.exists())"
+                }
+              ],
+              "rule": [
+                {
+                  "name": "questionnaire_response_item_check_consent",
+                  "source": [
+                    {
+                      "context": "questionnaireResponse",
+                      "element": "item",
+                      "variable": "questionnaireResponseItem",
+                      "condition": "((linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03') and answer.where(value.code = 'yes').exists())"
+                    }
+                  ],
+                  "rule": [
+                    {
+                      "name": "r_medication_request_consent_stock",
+                      "source": [
+                        {
+                          "context": "subject"
+                        }
+                      ],
+                      "dependent": [
+                        {
+                          "name": "generateImmunization",
+                          "variable": [
+                            "period",
+                            "version",
+                            "subject",
+                            "definition",
+                            "questionnaireResponse",
+                            "careplan"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "r_medication_request_stock",
+                      "source": [
+                        {
+                          "context": "subject"
+                        }
+                      ],
+                      "dependent": [
+                        {
+                          "name": "updateMedicationRequest",
+                          "variable": [
+                            "period",
+                            "version",
+                            "subject",
+                            "definition",
+                            "questionnaireResponse",
+                            "careplan"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "questionnaire_response_item_consent_no",
+              "source": [
+                {
+                  "context": "questionnaireResponse",
+                  "element": "item",
+                  "variable": "questionnaireResponseItem",
+                  "condition": "((linkId = '5b303e22-5ba0-4d69-967a-0c37f478ad03') and answer.where(value.code = 'no').exists())"
+                }
+              ],
+              "rule": [
+                {
+                  "name": "r_medication_request_consent",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "dependent": [
+                    {
+                      "name": "extractMedicationRequestPlanOnHold",
+                      "variable": [
+                        "period",
+                        "version",
+                        "subject",
+                        "definition",
+                        "questionnaireResponse",
+                        "careplan"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "generateImmunization",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "period",
+          "type": "Period",
+          "mode": "source"
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "mode": "source"
+        },
+        {
+          "name": "subject",
+          "type": "Patient",
+          "mode": "source"
+        },
+        {
+          "name": "definition",
+          "type": "ActivityDefinition",
+          "mode": "source"
+        },
+        {
+          "name": "questionnaireResponse",
+          "type": "QuestionnaireResponse",
+          "mode": "source"
+        },
+        {
+          "name": "careplan",
+          "type": "CarePlan",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "rule_immunization",
+          "source": [
+            {
+              "context": "subject"
+            }
+          ],
+          "target": [
+            {
+              "variable": "immunization",
+              "transform": "create",
+              "parameter": [
+                {
+                  "valueString": "Immunization"
+                }
+              ]
+            }
+          ],
+          "rule": [
+            {
+              "name": "rule_immunization_id",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "id",
+                  "transform": "uuid"
+                }
+              ]
+            },
+            {
+              "name": "rule_immunization_status",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "status",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "completed"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "immunization_vaccineCode",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "vaccineCode",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "definition"
+                    },
+                    {
+                      "valueString": "$this.product"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_immunization_reasonCode",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "vaccineCode",
+                  "variable": "reasonCode",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "CodeableConcept"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_immunization_reasonCode_coding",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "reasonCode",
+                      "contextType": "variable",
+                      "element": "coding",
+                      "variable": "reasonCodeCoding",
+                      "transform": "c",
+                      "parameter": [
+                        {
+                          "valueString": "http://snomed.info/sct"
+                        },
+                        {
+                          "valueString": "33879002"
+                        }
+                      ]
+                    }
+                  ],
+                  "rule": [
+                    {
+                      "name": "rule_immunization_reasonCode_coding_display",
+                      "source": [
+                        {
+                          "context": "subject"
+                        }
+                      ],
+                      "target": [
+                        {
+                          "context": "reasonCodeCoding",
+                          "contextType": "variable",
+                          "element": "display",
+                          "transform": "copy",
+                          "parameter": [
+                            {
+                              "valueString": "Administration of vaccine to produce active immunity (procedure)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_immunization_reasonCode_text",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "reasonCode",
+                      "contextType": "variable",
+                      "element": "text",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueString": "Administration of vaccine to produce active immunity (procedure)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_immunization_performer",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "performer",
+                  "variable": "performer",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Immunization_Performer"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_immunization_performer_actor",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "performer",
+                      "contextType": "variable",
+                      "element": "actor",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "subject"
+                        },
+                        {
+                          "valueString": "$this.generalPractitioner.first()"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_protocol_applied_value",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "protocolApplied",
+                  "variable": "protocolApplied",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Immunization_AppliedProtocol"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_protocol_applied_dosage_number",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "protocolApplied",
+                      "contextType": "variable",
+                      "element": "doseNumber",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "subject"
+                        },
+                        {
+                          "valueString": "'1'"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_protocol_applied_dosage_number",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "protocolApplied",
+                      "contextType": "variable",
+                      "element": "seriesDoses",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "subject"
+                        },
+                        {
+                          "valueString": "'1'"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_immunization_patient",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "patient",
+                  "variable": "patientReference",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "patientReference",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "$this.id.replaceMatches('/_history/.*', '')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_immunization_occurrenceDateTime",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "immunization",
+                  "contextType": "variable",
+                  "element": "occurrence",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "questionnaireResponse"
+                    },
+                    {
+                      "valueString": "$this.item.where(linkId = '1e1f0f3b-58de-41b4-8db0-6c4b033cce57').answer.value.toString() + 'T00:00:00.00Z'"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_careplan_task",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_careplan_task_reference",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "variable": "activity",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "careplan"
+                        },
+                        {
+                          "valueString": "activity.where(detail.kind = 'MedicationRequest')"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "activity",
+                      "contextType": "variable",
+                      "element": "outcomeReference",
+                      "transform": "reference",
+                      "parameter": [
+                        {
+                          "valueId": "immunization"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_add_task",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "careplan",
+                      "contextType": "variable",
+                      "element": "contained",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueId": "immunization"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "updateMedicationRequest",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "period",
+          "type": "Period",
+          "mode": "source"
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "mode": "source"
+        },
+        {
+          "name": "subject",
+          "type": "Patient",
+          "mode": "source"
+        },
+        {
+          "name": "definition",
+          "type": "ActivityDefinition",
+          "mode": "source"
+        },
+        {
+          "name": "questionnaireResponse",
+          "type": "QuestionnaireResponse",
+          "mode": "source"
+        },
+        {
+          "name": "careplan",
+          "type": "CarePlan",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "r_medication_request",
+          "source": [
+            {
+              "context": "subject"
+            }
+          ],
+          "target": [
+            {
+              "variable": "medicationRequestOrder",
+              "transform": "create",
+              "parameter": [
+                {
+                  "valueString": "MedicationRequest"
+                }
+              ]
+            }
+          ],
+          "rule": [
+            {
+              "name": "rule_update_medication_request_value_id",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "id",
+                  "variable": "id",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "id"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_update_medication_request_value",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "id",
+                      "contextType": "variable",
+                      "element": "value",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "questionnaireResponse"
+                        },
+                        {
+                          "valueString": "$this.item.where(linkId = 'c1d8fed1-ff36-43b6-8061-22561154b13b').answer.value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_status",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "status",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "completed"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_intent",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "intent",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "order"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_doNotPerform",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "doNotPerform",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueBoolean": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_authoredOn",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "authoredOn",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "now()"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_recorder",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "recorder",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "$this.generalPractitioner.first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_data",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "medication",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "definition"
+                    },
+                    {
+                      "valueString": "code"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_data",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "medication",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "definition"
+                    },
+                    {
+                      "valueString": "product"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_identifier",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "identifier",
+                  "variable": "iden",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Identifier"
+                    }
+                  ]
+                },
+                {
+                  "context": "iden",
+                  "contextType": "variable",
+                  "element": "value",
+                  "transform": "uuid"
+                },
+                {
+                  "context": "iden",
+                  "contextType": "variable",
+                  "element": "use",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "official"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_subject",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "subject",
+                  "variable": "patientReference",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "patientReference",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "$this.id.replaceMatches('/_history/.*', '')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_dispenseRequest",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "dispenseRequest",
+                  "variable": "dispenseRequest",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Dispense_Request"
+                    }
+                  ]
+                },
+                {
+                  "context": "dispenseRequest",
+                  "contextType": "variable",
+                  "element": "validityPeriod",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueId": "period"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_update_flag_basedOn",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "basedOn",
+                  "variable": "ref",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "ref",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "careplan"
+                    },
+                    {
+                      "valueString": "'CarePlan/' + $this.id.replaceMatches('/_history/.*', '').replaceMatches('CarePlan/', '')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_reason_code",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestOrder",
+                  "contextType": "variable",
+                  "element": "reasonCode",
+                  "variable": "concept",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "CodeableConcept"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "r_en_cc_cod",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "concept",
+                      "contextType": "variable",
+                      "element": "coding",
+                      "variable": "coding",
+                      "transform": "c",
+                      "parameter": [
+                        {
+                          "valueString": "http://snomed.info/sct"
+                        },
+                        {
+                          "valueString": "1000001"
+                        }
+                      ]
+                    }
+                  ],
+                  "rule": [
+                    {
+                      "name": "r_en_cod_disp",
+                      "source": [
+                        {
+                          "context": "subject"
+                        }
+                      ],
+                      "target": [
+                        {
+                          "context": "coding",
+                          "contextType": "variable",
+                          "element": "display",
+                          "transform": "copy",
+                          "parameter": [
+                            {
+                              "valueString": "Complete Immunization"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "r_en_cod_text",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "concept",
+                      "contextType": "variable",
+                      "element": "text",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueString": "Complete Immunization"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_period_extraction",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "dependent": [
+                {
+                  "name": "extractPeriod",
+                  "variable": [
+                    "subject",
+                    "medicationRequestOrder"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_careplan_task",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_careplan_task_reference",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "variable": "activity",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "careplan"
+                        },
+                        {
+                          "valueString": "activity.where(detail.kind = 'MedicationRequest')"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "activity",
+                      "contextType": "variable",
+                      "element": "outcomeReference",
+                      "transform": "reference",
+                      "parameter": [
+                        {
+                          "valueId": "medicationRequestOrder"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_add_task",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "careplan",
+                      "contextType": "variable",
+                      "element": "contained",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueId": "medicationRequestOrder"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extractMedicationRequestPlanOnHold",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "period",
+          "type": "Period",
+          "mode": "source"
+        },
+        {
+          "name": "version",
+          "type": "Integer",
+          "mode": "source"
+        },
+        {
+          "name": "subject",
+          "type": "Patient",
+          "mode": "source"
+        },
+        {
+          "name": "definition",
+          "type": "ActivityDefinition",
+          "mode": "source"
+        },
+        {
+          "name": "questionnaireResponse",
+          "type": "QuestionnaireResponse",
+          "mode": "source"
+        },
+        {
+          "name": "careplan",
+          "type": "CarePlan",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "r_medication_request",
+          "source": [
+            {
+              "context": "subject"
+            }
+          ],
+          "target": [
+            {
+              "variable": "medicationRequestCancelledOrHold",
+              "transform": "create",
+              "parameter": [
+                {
+                  "valueString": "MedicationRequest"
+                }
+              ]
+            }
+          ],
+          "rule": [
+            {
+              "name": "rule_update_medication_request_value_id",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "id",
+                  "variable": "id",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "id"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_update_medication_request_value",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "id",
+                      "contextType": "variable",
+                      "element": "value",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "questionnaireResponse"
+                        },
+                        {
+                          "valueString": "$this.item.where(linkId = 'c1d8fed1-ff36-43b6-8061-22561154b13b').answer.value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_status",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "status",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "on-hold"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_intent",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "intent",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "plan"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_doNotPerform",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "doNotPerform",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueBoolean": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_authoredOn",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "authoredOn",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "now()"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_recorder",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "recorder",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "$this.generalPractitioner.first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_data",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "medication",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "definition"
+                    },
+                    {
+                      "valueString": "code"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_data",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "medication",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "definition"
+                    },
+                    {
+                      "valueString": "product"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_identifier",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "identifier",
+                  "variable": "iden",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Identifier"
+                    }
+                  ]
+                },
+                {
+                  "context": "iden",
+                  "contextType": "variable",
+                  "element": "value",
+                  "transform": "uuid"
+                },
+                {
+                  "context": "iden",
+                  "contextType": "variable",
+                  "element": "use",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "official"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_subject",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "subject",
+                  "variable": "patientReference",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "patientReference",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "subject"
+                    },
+                    {
+                      "valueString": "$this.id.replaceMatches('/_history/.*', '')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_dispenseRequest",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "dispenseRequest",
+                  "variable": "dispenseRequest",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Dispense_Request"
+                    }
+                  ]
+                },
+                {
+                  "context": "dispenseRequest",
+                  "contextType": "variable",
+                  "element": "validityPeriod",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueId": "period"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_update_flag_basedOn",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "basedOn",
+                  "variable": "ref",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "ref",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "evaluate",
+                  "parameter": [
+                    {
+                      "valueId": "careplan"
+                    },
+                    {
+                      "valueString": "'CarePlan/' + $this.id.replaceMatches('/_history/.*', '').replaceMatches('CarePlan/', '')"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_supporting_information",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "supportingInformation",
+                  "variable": "questionnaireReference",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Reference"
+                    }
+                  ]
+                },
+                {
+                  "context": "questionnaireReference",
+                  "contextType": "variable",
+                  "element": "reference",
+                  "transform": "copy",
+                  "parameter": [
+                    {
+                      "valueString": "Questionnaire/caebc6b4-7861-42be-8925-12c4a6bad921"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_medication_request_reason_code",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "context": "medicationRequestCancelledOrHold",
+                  "contextType": "variable",
+                  "element": "reasonCode",
+                  "variable": "concept",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "CodeableConcept"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "r_en_cc_cod",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "concept",
+                      "contextType": "variable",
+                      "element": "coding",
+                      "variable": "coding",
+                      "transform": "c",
+                      "parameter": [
+                        {
+                          "valueString": "http://snomed.info/sct"
+                        },
+                        {
+                          "valueString": "1000001"
+                        }
+                      ]
+                    }
+                  ],
+                  "rule": [
+                    {
+                      "name": "r_en_cod_disp",
+                      "source": [
+                        {
+                          "context": "subject"
+                        }
+                      ],
+                      "target": [
+                        {
+                          "context": "coding",
+                          "contextType": "variable",
+                          "element": "display",
+                          "transform": "copy",
+                          "parameter": [
+                            {
+                              "valueString": "Complete Immunization"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "r_en_cod_text",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "concept",
+                      "contextType": "variable",
+                      "element": "text",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueString": "Complete Immunization"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "r_task_period_extraction",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "dependent": [
+                {
+                  "name": "extractPeriod",
+                  "variable": [
+                    "subject",
+                    "medicationRequestCancelledOrHold"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "rule_careplan_task",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_careplan_task_reference",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "variable": "activity",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "careplan"
+                        },
+                        {
+                          "valueString": "activity.where(detail.kind = 'MedicationRequest')"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "activity",
+                      "contextType": "variable",
+                      "element": "outcomeReference",
+                      "transform": "reference",
+                      "parameter": [
+                        {
+                          "valueId": "medicationRequestCancelledOrHold"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_add_task",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "careplan",
+                      "contextType": "variable",
+                      "element": "contained",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueId": "medicationRequestCancelledOrHold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "extractPeriod",
+      "typeMode": "none",
+      "input": [
+        {
+          "name": "subject",
+          "type": "Patient",
+          "mode": "source"
+        },
+        {
+          "name": "medicationRequest",
+          "type": "MedicationRequest",
+          "mode": "target"
+        }
+      ],
+      "rule": [
+        {
+          "name": "rule_task_execution_period",
+          "source": [
+            {
+              "context": "subject"
+            }
+          ],
+          "target": [
+            {
+              "variable": "dispenseRequest",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "medicationRequest"
+                },
+                {
+                  "valueString": "$this.dispenseRequest"
+                }
+              ]
+            },
+            {
+              "variable": "start",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "dispenseRequest"
+                },
+                {
+                  "valueString": "$this.validityPeriod.start"
+                }
+              ]
+            },
+            {
+              "variable": "end",
+              "transform": "evaluate",
+              "parameter": [
+                {
+                  "valueId": "dispenseRequest"
+                },
+                {
+                  "valueString": "$this.validityPeriod.end"
+                }
+              ]
+            }
+          ],
+          "rule": [
+            {
+              "name": "rule_period",
+              "source": [
+                {
+                  "context": "subject"
+                }
+              ],
+              "target": [
+                {
+                  "variable": "period",
+                  "transform": "create",
+                  "parameter": [
+                    {
+                      "valueString": "Period"
+                    }
+                  ]
+                }
+              ],
+              "rule": [
+                {
+                  "name": "rule_period_start",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "period",
+                      "contextType": "variable",
+                      "element": "start",
+                      "variable": "startDateTime",
+                      "transform": "create",
+                      "parameter": [
+                        {
+                          "valueString": "dateTime"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "startDateTime",
+                      "contextType": "variable",
+                      "element": "value",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "start"
+                        },
+                        {
+                          "valueString": "$this.value.substring(0, 10) + 'T00:00:00.00Z'"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_period_end",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "period",
+                      "contextType": "variable",
+                      "element": "end",
+                      "variable": "endDateTime",
+                      "transform": "create",
+                      "parameter": [
+                        {
+                          "valueString": "dateTime"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "endDateTime",
+                      "contextType": "variable",
+                      "element": "value",
+                      "transform": "evaluate",
+                      "parameter": [
+                        {
+                          "valueId": "end"
+                        },
+                        {
+                          "valueString": "$this.value.substring(0, 10) + 'T00:00:00.00Z'"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "rule_execution_period",
+                  "source": [
+                    {
+                      "context": "subject"
+                    }
+                  ],
+                  "target": [
+                    {
+                      "context": "medicationRequest",
+                      "contextType": "variable",
+                      "element": "dispenseRequest",
+                      "variable": "dispenseRequest",
+                      "transform": "create",
+                      "parameter": [
+                        {
+                          "valueString": "Dispense_Request"
+                        }
+                      ]
+                    },
+                    {
+                      "context": "dispenseRequest",
+                      "contextType": "variable",
+                      "element": "validityPeriod",
+                      "transform": "copy",
+                      "parameter": [
+                        {
+                          "valueId": "period"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

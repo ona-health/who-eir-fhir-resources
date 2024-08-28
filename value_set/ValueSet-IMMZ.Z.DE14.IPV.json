@@ -1,0 +1,46 @@
+{
+  "resourceType": "ValueSet",
+  "status": "active",
+  "name": "IMMZ_Z_DE14_IPV",
+  "id": "IMMZ.Z.DE14.IPV",
+  "title": "IMMZ.Z.DE14.IPV Inactiviated Polio containing vaccines",
+  "description": "Vaccine terminology codes for inactivated polio vaccines.",
+  "url": "http://smart.who.int/ig/smart-immunizations/ValueSet/IMMZ.Z.DE14.IPV",
+  "compose": {
+    "include": [
+      {
+        "system": "http://hl7.org/fhir/sid/icd-11",
+        "concept": [
+          {
+            "code": "XM1LX9",
+            "display": "Diphtheria, hemophilus influenzae B, pertussis, poliomyelitis, tetanus vaccines"
+          },
+          {
+            "code": "XM09Q7",
+            "display": "Diphtheria, pertussis, poliomyelitis, tetanus vaccines"
+          },
+          {
+            "code": "XM0LT9",
+            "display": "Diphtheria, pertussis, poliomyelitis, tetanus, hepatitis B vaccines"
+          },
+          {
+            "code": "XM8AW1",
+            "display": "Diphtheria, poliomyelitis, tetanus vaccines"
+          },
+          {
+            "code": "XM01H1",
+            "display": "Hemophilus influenzae B and poliomyelitis vaccines"
+          },
+          {
+            "code": "XM84S1",
+            "display": "Diphtheria, hepatitis B, tetanus, acellular pertussis, inactivated polio virus, haemophilus Influenzae type B vaccines"
+          },
+          {
+            "code": "XM5V19",
+            "display": "Poliomyelitis, trivalent, inactivated, whole virus"
+          }
+        ]
+      }
+    ]
+  }
+}

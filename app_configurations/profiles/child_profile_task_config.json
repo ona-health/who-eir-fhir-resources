@@ -1,0 +1,464 @@
+{
+  "appId": "eir",
+  "configType": "profile",
+  "id": "childProfileTask",
+  "fhirResource": {
+    "baseResource": {
+      "resource": "Patient"
+    },
+    "relatedResources": [
+      {
+        "resource": "CarePlan",
+        "searchParameter": "subject"
+      }
+    ]
+  },
+  "topAppBar": {
+    "title": {
+      "viewType": "COMPOUND_TEXT",
+      "primaryText": "@{patientName} profile",
+      "primaryTextColor": "#FFFFFF",
+      "fontSize": 16.0,
+      "maxLines": 1,
+      "primaryTextFontWeight": "BOLD"
+    },
+    "collapsible": false
+  },
+  "rules": [
+    {
+      "name": "patientFirstName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientFirstName', fhirPath.extractValue(Patient, \"Patient.name[0].select(given[0])\"))"
+      ]
+    },
+    {
+      "name": "patientMiddleName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientMiddleName', fhirPath.extractValue(Patient, \"Patient.name[0].select(text)\"))"
+      ]
+    },
+    {
+      "name": "patientLastName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientLastName', fhirPath.extractValue(Patient, \"Patient.name[0].select(family)\"))"
+      ]
+    },
+    {
+      "name": "patientName",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientName', data.get('patientFirstName') + ' ' + data.get('patientMiddleName') + ' ' + data.get('patientLastName'))"
+      ]
+    },
+    {
+      "name": "patientActive",
+      "condition": "true",
+      "actions": [
+        "data.put('patientActive', fhirPath.extractValue(Patient, 'Patient.active'))"
+      ]
+    },
+    {
+      "name": "inactivePatient",
+      "condition": "true",
+      "actions": [
+        "data.put('inactivePatient', !data.get('patientActive'))"
+      ]
+    },
+    {
+      "name": "patientDod",
+      "condition": "true",
+      "priority": 1,
+      "actions": [
+        "data.put('patientDod', fhirPath.extractValue(Patient, 'Patient.deceased'))"
+      ]
+    },
+    {
+      "name": "patientDodFormatted",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientDodFormatted', service.formatDate(data.get('patientDod'), \"yyyy-MM-dd'T'HH:mm:ss.SSXXX\", \"dd MMM, yyyy\"))"
+      ]
+    },
+    {
+      "name": "patientDeceased",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientDeceased', data.get('patientDod').empty().not())"
+      ]
+    },
+    {
+      "name": "patientMuted",
+      "condition": "true",
+      "priority": 3,
+      "actions": [
+        "data.put('patientMuted', !data.get('patientActive') && data.get('patientDod').empty())"
+      ]
+    },
+    {
+      "name": "patientTextColor",
+      "condition": "true",
+      "priority": 4,
+      "actions": [
+        "data.put('patientTextColor', data.get('patientMuted') == 'true' || data.get('patientDeceased') == 'true' ? '#6F7274' : '#000000')"
+      ]
+    },
+    {
+      "name": "patientIdentifier",
+      "condition": "true",
+      "actions": [
+        "data.put('patientIdentifier', fhirPath.extractValue(Patient, 'Patient.identifier[0].value'))"
+      ]
+    },
+    {
+      "name": "patientId",
+      "condition": "true",
+      "actions": [
+        "data.put('patientId', fhirPath.extractValue(Patient, 'Patient.id'))"
+      ]
+    },
+    {
+      "name": "patientAge",
+      "condition": "true",
+      "actions": [
+        "data.put('patientAge', service.extractAge(Patient))"
+      ]
+    },
+    {
+      "name": "patientAgeInYears",
+      "condition": "true",
+      "actions": [
+        "data.put('patientAgeInYears', fhirPath.extractValue(Patient, \"(today().toString().substring(0, 4).toInteger() - Patient.birthDate.toString().substring(0, 4).toInteger())\"))"
+      ]
+    },
+    {
+      "name": "childCardVisible",
+      "condition": "true",
+      "actions": [
+        "data.put('childCardVisible', data.get('patientAge') == 'true' && data.get('patientAge')<=5)"
+      ]
+    },
+    {
+      "name": "patientGender",
+      "condition": "true",
+      "actions": [
+        "data.put('patientGender', service.extractGender(Patient))"
+      ]
+    },
+    {
+      "name": "patientDOB",
+      "condition": "true",
+      "actions": [
+        "data.put('patientDOB', service.extractDOB(Patient, 'dd/MM/yyyy'))"
+      ]
+    },
+    {
+      "name": "birthDate",
+      "condition": "true",
+      "actions": [
+        "data.put('birthDate', fhirPath.extractValue(Patient, 'Patient.birthDate'))"
+      ]
+    },
+    {
+      "name": "isChild",
+      "condition": "true",
+      "actions": [
+        "data.put('isChild', fhirPath.extractValue(Patient, \"Patient.active and (Patient.birthDate >= today() - 5 'years')\"))"
+      ]
+    },
+    {
+      "name": "is9Years",
+      "condition": "true",
+      "actions": [
+        "data.put('is9Years', fhirPath.extractValue(Patient, \"Patient.active and (Patient.birthDate >= today() - 9 'years')\"))",
+        "data.put('is9andHalfYears', fhirPath.extractValue(Patient, \"Patient.active and (Patient.birthDate >= today() - 9.5 'years')\"))"
+      ]
+    },
+    {
+      "name": "isChildUnder2months",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildUnder2months', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate >= today() - 2 'months') and (Patient.birthDate < today() - 14 'weeks'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOver2months",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOver2months', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 2 'months') and (Patient.birthDate > today() - 9 'months'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverSixWeeks",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverSixWeeks', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 6 'weeks') and (Patient.birthDate > today() - 10 'weeks'))\"))"
+      ]
+    },
+    {
+      "name": "isChildUnderSixWeeks",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildUnderSixWeeks', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate >= today() - 6 'weeks'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverTenWeeks",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverTenWeeks', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 10 'weeks') and (Patient.birthDate > today() - 14 'weeks'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverFourteenWeeks",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverFourteenWeeks', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 14 'weeks') and (Patient.birthDate > today() - 2 'months'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverNineMonths",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverNineMonths', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 9 'months') and (Patient.birthDate > today() - 15 'months'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverFifteenMonths",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverFifteenMonths', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 15 'months') and (Patient.birthDate > today() - 5 'years'))\"))"
+      ]
+    },
+    {
+      "name": "isChildOverEighteenteenMonths",
+      "condition": "true",
+      "actions": [
+        "data.put('isChildOverEighteenteenMonths', fhirPath.extractValue(Patient, \"Patient.active and ((Patient.birthDate <= today() - 18 'months') and (Patient.birthDate > today() - 5 'years'))\"))"
+      ]
+    },
+    {
+      "name": "isTaskMoreThanOne",
+      "condition": "true",
+      "actions": [
+        "data.put( 'atBirthTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '0_d'\").size() > 1 )",
+        "data.put( 'atSixWeeksTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '6_wk'\").size() > 1 )",
+        "data.put( 'atTenWeeksTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '10_wk'\").size() > 1 )",
+        "data.put( 'atFourteenWeeksTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '14_wk'\").size() > 1 )",
+        "data.put( 'atNineMonthsTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '9_mo'\").size() > 1 )",
+        "data.put( 'atFifteenMonthsTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '15_mo'\").size() > 1 )",
+        "data.put( 'atEighteenMonthsTasksMoreThan1', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '18_mo'\").size() > 1 )"
+      ]
+    },
+    {
+      "name": "showAtBirthTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtBirthTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '0_d'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtSixWeeksTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtSixWeeksTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '6_wk'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtTenWeeksTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtTenWeeksTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '10_wk'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtFourteenWeeksTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtFourteenWeeksTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '14_wk'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtNineMonthsTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtNineMonthsTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '9_mo'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtFifteenMonthsTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtFifteenMonthsTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '15_mo'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "showAtEighteenMonthsTasks",
+      "condition": "true",
+      "actions": [
+        "data.put( 'showAtEighteenMonthsTasks', service.filterResources(availableTasks, \"(Task.status = 'ready' or Task.status = 'failed' or Task.status = 'cancelled') and Task.groupIdentifier.value = '18_mo'\").size() > 0 )"
+      ]
+    },
+    {
+      "name": "enableAdverseReactions",
+      "condition": "true",
+      "actions": [
+        "data.put('enableAdverseReactions', service.filterResources(availableImmunizations, \"(Immunization.status = 'completed')\").size() > 0)"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "viewType": "COLUMN",
+      "children": [
+        {
+          "viewType": "CARD",
+          "padding": 0,
+          "content": [
+            {
+              "viewType": "COLUMN",
+              "children": [
+                {
+                  "viewType": "COMPOUND_TEXT",
+                  "primaryText": "@{patientName}",
+                  "primaryTextColor": "@{patientTextColor}"
+                },
+                {
+                  "visible": "@{patientMuted}",
+                  "viewType": "COMPOUND_TEXT",
+                  "primaryText": "{{ patient.is.muted }}",
+                  "fontSize": 12.0,
+                  "primaryTextColor": "#FF0000"
+                },
+                {
+                  "visible": "@{patientDeceased}",
+                  "viewType": "COMPOUND_TEXT",
+                  "primaryText": "Deceased: @{patientDodFormatted}",
+                  "fontSize": 12.0,
+                  "primaryTextColor": "#FF0000"
+                },
+                {
+                  "viewType": "SPACER",
+                  "height": 10
+                },
+                {
+                  "viewType": "COMPOUND_TEXT",
+                  "primaryText": "ID: #@{patientIdentifier}",
+                  "primaryTextColor": "@{patientTextColor}"
+                },
+                {
+                  "viewType": "SPACER",
+                  "height": 10
+                },
+                {
+                  "viewType": "PERSONAL_DATA",
+                  "personalDataItems": [
+                    {
+                      "label": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "Sex",
+                        "primaryTextColor": "@{patientTextColor}"
+                      },
+                      "displayValue": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "@{patientGender}",
+                        "fontSize": 14,
+                        "primaryTextColor": "@{patientTextColor}"
+                      }
+                    },
+                    {
+                      "label": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "Age",
+                        "primaryTextColor": "@{patientTextColor}"
+                      },
+                      "displayValue": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "@{patientAge}",
+                        "fontSize": 14,
+                        "primaryTextColor": "@{patientTextColor}"
+                      }
+                    },
+                    {
+                      "label": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "DOB",
+                        "primaryTextColor": "@{patientTextColor}"
+                      },
+                      "displayValue": {
+                        "viewType": "COMPOUND_TEXT",
+                        "primaryText": "@{patientDOB}",
+                        "fontSize": 14,
+                        "primaryTextColor": "@{patientTextColor}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "viewType": "SPACER",
+          "height": 8
+        },
+        {
+          "viewType": "CARD",
+          "visible": true,
+          "padding": 16,
+          "header": {
+            "viewType": "COMPOUND_TEXT",
+            "primaryText": "WORKFLOWS",
+            "primaryTextColor": "#6F7274",
+            "fontSize": 18.0,
+            "padding": 16
+          },
+          "content": [
+            {
+              "viewType": "COLUMN",
+              "children": [
+                {
+                  "viewType": "BUTTON",
+                  "smallSized": "true",
+                  "text": "Measles Mini IG",
+                  "status": "DUE",
+                  "visible": "true",
+                  "clickable": "true",
+                  "enabled": "@{patientActive}",
+                  "actions": [
+                    {
+                      "trigger": "ON_CLICK",
+                      "workflow": "LAUNCH_PROFILE",
+                      "id": "childProfileMeasles"
+                    }
+                  ]
+                },
+                {
+                  "viewType": "BUTTON",
+                  "smallSized": "true",
+                  "text": "CHW Immunization Workflow",
+                  "status": "DUE",
+                  "visible": "true",
+                  "clickable": "true",
+                  "enabled": "@{patientActive}",
+                  "actions": [
+                    {
+                      "trigger": "ON_CLICK",
+                      "workflow": "LAUNCH_PROFILE",
+                      "id": "childProfile"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

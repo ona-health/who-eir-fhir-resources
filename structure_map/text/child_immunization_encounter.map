@@ -1,0 +1,34 @@
+map "http://fhir.zeir.smartregister.org/fhir/StructureMap/f258105f-bb75-4fad-b60c-bfa0442682bb" = 'ChildImmunization'
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" as target
+
+group ProcessChildImmunization(source src: QuestionnaireResponse, target bundle: Bundle) {
+    src -> create('Encounter') as encounter
+    then ExtractEncounter(src, encounter, bundle) "r_child_immunization";
+}
+
+group ExtractEncounter(source src: QuestionnaireResponse, target encounter: Encounter, target bundle: Bundle) {
+    src -> encounter.id = uuid(),
+        encounter.status = "finished",
+        encounter.type = cc("https://smartregister.org/", "immunization", "Immunization"),
+        encounter.class = c("http://terminology.hl7.org/CodeSystem/v3-ActCode", "HH", "home"),
+        encounter.priority = cc("http://terminology.hl7.org/ValueSet/v3-ActPriority", "EL", "Elective") as encounterPriority,
+        encounterPriority.text = "Elective" "r_en_static";
+
+    src -> encounter.subject = evaluate(src, $this.subject) "r_en_sub";
+
+    src -> encounter.period = create("Period") as period then {
+        src -> period.start = evaluate(src, now()) "r_start";
+        src -> period.end = evaluate(src, now()) "r_end";
+    } "r_period";
+
+    src -> encounter.participant = create("Encounter_Participant") as partComp then {
+        src -> partComp.individual = create("Reference") as encOwner then {
+            src -> encOwner.reference = evaluate(src, "Practitioner/" + $this.meta.tag.last().code) "r_enc_part_reference";
+        } "r_enc_part_individual";
+    } "r_enc_part_component";
+
+    src -> bundle.entry as entry,
+        entry.resource = encounter "r_bundle_entry_encounter";
+}

@@ -1,0 +1,155 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "caebc6b4-7861-42be-8925-12c4a6bad921",
+  "title": "Complete Child Immunization",
+  "description": "Complete Child Immunization",
+  "version": "0.0.1",
+  "status": "active",
+  "publisher": "ONA",
+  "meta": {
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "useContext": [
+    {
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+            "display": "Complete Child Immunization"
+          }
+        ]
+      }
+    }
+  ],
+  "contact": [
+    {
+      "name": "https://www.smartregister.org"
+    }
+  ],
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    }
+  ],
+  "date": "2022-10-12T00:00:00Z",
+  "item": [
+    {
+      "linkId": "5b303e22-5ba0-4d69-967a-0c37f478ad03",
+      "type": "choice",
+      "text": "Have you Administered the Vaccine?",
+      "required": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "d144fe4c-3a40-4a93-8b04-ba1009c41c4d",
+            "code": "yes",
+            "system": "urn:uuid:2f9f44e4-9799-4d60-8b48-adbfdc15f433",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "b70762a8-4f82-49c4-849d-acda5fe06d61",
+            "code": "no",
+            "system": "urn:uuid:2f9f44e4-9799-4d60-8b48-adbfdc15f433",
+            "display": "No"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "radio-button"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "1e1f0f3b-58de-41b4-8db0-6c4b033cce57",
+      "type": "date",
+      "text": "Date of Immunization",
+      "required": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueDate": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/cqf-calculatedValue",
+                "valueExpression": {
+                  "language": "text/fhirpath",
+                  "expression": "today()"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "enableWhen": [
+        {
+          "question": "5b303e22-5ba0-4d69-967a-0c37f478ad03",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:2f9f44e4-9799-4d60-8b48-adbfdc15f433",
+            "code": "yes"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "c1d8fed1-ff36-43b6-8061-22561154b13b",
+      "type": "string",
+      "text": "MedicationRequest ",
+      "required": false,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+          "valueBoolean": true
+        }
+      ]
+    }
+  ]
+}

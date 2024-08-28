@@ -1,0 +1,110 @@
+map "http://hl7.org/fhir/StructureMap/bdf23f3b-232e-4027-865e-1eec690575bc" = 'Measles IG workflow'
+
+uses "http://hl7.org/fhir/StructureDefinition/Parameters" as source
+uses "http://hl7.org/fhir/StructureDefinition/CarePlan" as target
+
+group childImmunizationSchedule(source src : Parameters, target careplan: CarePlan) {
+    src -> evaluate(src, $this.parameter.where(name='subject').resource) as subject,
+        evaluate(src, $this.parameter.where(name='definition').resource) as definition,
+        evaluate(src, $this.parameter.where(name='depends-on').resource.entry.where(resource is QuestionnaireResponse).resource) as questionnaireResponse,
+        evaluate(src, $this.parameter.where(name='period').value) as period,
+        evaluate(src, $this.parameter.where(name='version').value) as version
+        then extractMedicationRequestProposal(period, version, subject, definition, careplan) "r_careplan";
+}
+
+group extractMedicationRequestProposal (
+    source period: Period,
+    source version: Integer,
+    source subject : Patient,
+    source definition: ActivityDefinition,
+    target careplan: CarePlan) {
+
+     subject -> create('MedicationRequest') as medicationRequest then {
+        subject -> medicationRequest.basedOn = reference(careplan) "r_medication_request_based_on";
+        subject -> medicationRequest.status = 'draft' "r_medication_request_status";
+        subject -> medicationRequest.intent = 'proposal' "r_medication_request_intent";
+        subject -> medicationRequest.reasonCode = create('CodeableConcept') as concept then {
+            subject -> concept.coding = c("http://snomed.info/sct", "1000001") as coding then {
+                subject -> coding.display = 'Review Proposal' "r_en_cod_disp";
+            } "r_en_cc_cod";
+            subject ->  concept.text = 'Review Proposal' "r_en_cod_text";
+        } "r_medication_request_reason_code";
+        subject -> medicationRequest.supportingInformation = create('Reference') as questionnaireReference, questionnaireReference.reference = 'Questionnaire/d9a6dbf5-3529-4a3c-9b38-92ffb4e7bd89'
+        then extractMedicationRequest(period, version, subject, definition, careplan, medicationRequest), createClientFlag(period, version, subject, definition, careplan) "r_medication_request";
+    } "generate_medication_request";
+}
+
+group createClientFlag(
+    source period: Period,
+    source version: Integer,
+    source subject : Patient,
+    source definition: ActivityDefinition,
+    target careplan: CarePlan){
+    subject ->  create('Flag') as flag then {
+        subject -> flag.id = uuid() "r_flag_id";
+        subject -> flag.status = 'active' "r_flag_status";
+        subject -> flag.category = evaluate(definition, $this.product) "r_flag_category";
+        subject -> flag.code = cc('http://snomed.info/sct','1000003', 'Client History Taken')  "r_flag_code";
+        subject -> flag.subject = create('Reference') as patientReference, patientReference.reference = evaluate(subject, $this.id.replaceMatches('/_history/.*', '')) "r_flag_ref";
+        subject -> flag.period = period "r_flag_period";
+
+    subject then {
+            subject -> evaluate(careplan, activity.where(detail.kind = 'MedicationRequest')) as activity, activity.outcomeReference = reference(flag) "rule_careplan_task_reference";
+            subject -> careplan.contained = flag "rule_add_task";
+        } "rule_careplan_task";
+    } "r_flag";
+}
+
+group extractMedicationRequest(
+    source period: Period,
+    source version: Integer,
+    source subject : Patient,
+    source definition: ActivityDefinition,
+    target careplan: CarePlan,
+    target medicationRequest: MedicationRequest) {
+
+    // fill task into careplan contained and add reference in activity.outcome
+    subject -> // dosage[version] does not work, hence skipping the item from given index via skip.first
+        evaluate(definition, $this.dosage.skip(version).first()) as currentDose then {
+
+        subject -> medicationRequest.id = uuid(),
+            medicationRequest.identifier = create('Identifier') as iden, iden.value = uuid(), iden.use = 'official',
+            medicationRequest.subject = create('Reference') as patientReference, patientReference.reference = evaluate(subject, 'Patient/' + $this.id.replaceMatches('/_history/.*', '')),
+            medicationRequest.dispenseRequest = create('Dispense_Request') as dispenseRequest, dispenseRequest.validityPeriod = period,
+            medicationRequest.doNotPerform = false,
+            medicationRequest.authoredOn = evaluate(subject, now()),
+            medicationRequest.recorder = evaluate(subject, $this.generalPractitioner.first()),
+            medicationRequest.medication = evaluate(definition, $this.code),
+            medicationRequest.medication = evaluate(definition, $this.product) "r_task_data";
+
+        subject then extractPeriod(subject, medicationRequest) "r_task_period_extraction";
+
+        // create activity.detail of type/kind Task for this Task if not exists
+        subject where(careplan.activity.where(detail.kind = 'MedicationRequest').exists().not()) -> careplan.activity = create('CarePlan_Activity') as activity then {
+            subject -> activity.detail = create('CarePlan_ActivityDetail') as ActivityDefinition then {
+                subject -> ActivityDefinition.kind = 'MedicationRequest' "rule_activity_detail_data";
+            } "rule_activity_detail";
+        } "rule_careplan_activity";
+
+        // add MR to careplan irrespective of its validity
+        subject then {
+            subject -> evaluate(careplan, activity.where(detail.kind = 'MedicationRequest')) as activity, activity.outcomeReference = reference(medicationRequest) "rule_careplan_task_reference";
+            subject -> careplan.contained = medicationRequest "rule_add_task";
+        } "rule_careplan_task";
+    } "r_task";
+}
+
+group extractPeriod(source subject: Patient, target medicationRequest: MedicationRequest) {
+    subject -> evaluate(medicationRequest, $this.dispenseRequest) as dispenseRequest, evaluate(dispenseRequest, $this.validityPeriod.start) as start,
+        evaluate(dispenseRequest, $this.validityPeriod.end) as end then {
+        subject -> create('Period') as period then {
+            subject -> period.start = create('dateTime') as startDateTime,
+                startDateTime.value = evaluate(start, $this.value.substring(0,10) + 'T00:00:00.00Z') "rule_period_start";
+
+            subject -> period.end = create('dateTime') as endDateTime,
+                endDateTime.value = evaluate(end, $this.value.substring(0,10) + 'T00:00:00.00Z') "rule_period_end";
+
+            subject -> medicationRequest.dispenseRequest = create('Dispense_Request') as dispenseRequest, dispenseRequest.validityPeriod = period "rule_execution_period";
+        } "rule_period";
+    } "rule_task_execution_period";
+}

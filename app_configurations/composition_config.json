@@ -1,0 +1,2556 @@
+{
+  "resourceType": "Composition",
+  "id": "dd6c51f7-7e54-4966-a6e8-80a2c1e1c30c",
+  "identifier": {
+    "use": "official",
+    "value": "eir"
+  },
+  "status": "final",
+  "type": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "1156600005",
+        "display": "Device setting parameter"
+      }
+    ]
+  },
+  "date": "2022-09-16",
+  "title": "Device configurations",
+  "confidentiality": "L",
+  "section": [
+    {
+      "title": "Application configuration",
+      "focus": {
+        "reference": "Binary/931d9e9e-f65d-42e1-8247-8f57736a7961",
+        "identifier": {
+          "value": "application"
+        }
+      },
+      "mode": "working"
+    },
+    {
+      "title": "Sync configuration",
+      "focus": {
+        "reference": "Binary/540a165b-98f5-44e9-b2e8-8560a46c8bf7",
+        "identifier": {
+          "value": "sync"
+        }
+      },
+      "mode": "working"
+    },
+    {
+      "title": "Navigation configuration",
+      "focus": {
+        "reference": "Binary/e34ac58e-2a11-41fb-ae10-bc548bf7874d",
+        "identifier": {
+          "value": "navigation"
+        }
+      },
+      "mode": "working"
+    },
+    {
+      "title": "Register configurations",
+      "mode": "working",
+      "section": [
+        {
+          "title": "All Children register configuration",
+          "focus": {
+            "reference": "Binary/d9f57c63-1d87-44bc-b308-add7c9a6b23a",
+            "identifier": {
+              "value": "childRegister"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Profile configurations",
+      "mode": "working",
+      "section": [
+        {
+          "title": "Child profile configuration",
+          "focus": {
+            "reference": "Binary/addf8553-4995-47ff-bbce-496099d88034",
+            "identifier": {
+              "value": "childProfile"
+            }
+          }
+        },
+        {
+          "title": "Child profile Task configuration",
+          "focus": {
+            "reference": "Binary/7f550a86-dbfd-435b-b565-959dca39bc28",
+            "identifier": {
+              "value": "childProfileTask"
+            }
+          }
+        },
+        {
+          "title": "Child profile Measles configuration",
+          "focus": {
+            "reference": "Binary/99735176-8553-4ab3-b6bd-f117e7ae4df3",
+            "identifier": {
+              "value": "childProfileMeasles"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Translation configurations",
+      "mode": "working",
+      "section": [
+        {
+          "title": "Translation English",
+          "focus": {
+            "reference": "Binary/9c813673-78f2-4850-b075-04dc4857ed4c",
+            "identifier": {
+              "value": "strings"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Questionnaires",
+      "mode": "working",
+      "section": [
+        {
+          "title": "Administer Child Immunization",
+          "focus": {
+            "reference": "Questionnaire/d4f9bfbe-b684-4505-9c66-719afd5c9fca",
+            "identifier": {
+              "value": "administer-immunization"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "MR Proposal Questionnaire",
+          "focus": {
+            "reference": "Questionnaire/d9a6dbf5-3529-4a3c-9b38-92ffb4e7bd89",
+            "identifier": {
+              "value": "MR Proposal Questionnaire"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Complete Child Immunization",
+          "focus": {
+            "reference": "Questionnaire/caebc6b4-7861-42be-8925-12c4a6bad921",
+            "identifier": {
+              "value": "complete-immunization"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "EIR Child Immunization",
+          "focus": {
+            "reference": "Questionnaire/254993a7-71af-44d7-8965-a23e0d6ce425",
+            "identifier": {
+              "value": "eir-child-immunization"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Non IG Immunization CarePlan Enrollment",
+          "focus": {
+            "reference": "Questionnaire/6b972208-dcf2-442e-b02f-d0eca48b354a",
+            "identifier": {
+              "value": "non-ig-immunization-careplan-enrollment"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistory",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistory",
+            "identifier": {
+              "value": "client-history"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryDTP",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryDTP",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryDTP"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryHepatitisB",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryHepatitisB",
+            "identifier": {
+              "value": "client-history-hepatitis-b"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryMeasles",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryMeasles",
+            "identifier": {
+              "value": "client-history-measles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryMumps",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryMumps",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryPolio",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryPolio",
+            "identifier": {
+              "value": "client-history-polio"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryRubella",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryRubella",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryRubella"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryYellowFever",
+          "focus": {
+            "reference": "Questionnaire/IMMZD1ClientHistoryYellowFever",
+            "identifier": {
+              "value": "client-history-yellow-fever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "QIMMZCRegisterClient",
+          "focus": {
+            "reference": "Questionnaire/QIMMZCRegisterClient",
+            "identifier": {
+              "value": "patient-registration"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "QIMMZD5CheckContraindications",
+          "focus": {
+            "reference": "Questionnaire/QIMMZD5CheckContraindications",
+            "identifier": {
+              "value": "check-contraindications"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "StructureMaps",
+      "mode": "working",
+      "section": [
+        {
+          "title": "childImmunizationSchedule",
+          "focus": {
+            "reference": "StructureMap/07e945f2-5404-4d32-bc2b-dab08f2fa794"
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Child Immunization Encounter",
+          "focus": {
+            "reference": "StructureMap/f258105f-bb75-4fad-b60c-bfa0442682bb"
+          },
+          "mode": "working"
+        },
+        {
+          "title": "EIR Add Patient Registration",
+          "focus": {
+            "reference": "StructureMap/IMMZCQRToPatient",
+            "identifier": {
+              "value": "IMMZCQRToPatient"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "EIR C LMToPatient",
+          "focus": {
+            "reference": "StructureMap/IMMZCLMToPatient",
+            "identifier": {
+              "value": "IMMZCLMToPatient"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "EIR C QRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZCQRToLM",
+            "identifier": {
+              "value": "IMMZCQRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Measles IG workflow",
+          "focus": {
+            "reference": "StructureMap/bdf23f3b-232e-4027-865e-1eec690575bc",
+            "identifier": {
+              "value": "measlesIG"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Measles IG Client Workflow MR",
+          "focus": {
+            "reference": "StructureMap/77288d60-eaeb-49e7-b6b7-97ad2d308c7f",
+            "identifier": {
+              "value": "measlesIG"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Measles Contradictions workflow",
+          "focus": {
+            "reference": "StructureMap/1f0ca814-467b-48d3-9aa7-4e740a628350",
+            "identifier": {
+              "value": "measlesContradictions"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Measles Administer Immunization workflow",
+          "focus": {
+            "reference": "StructureMap/be876ffc-491d-4ab1-ba2c-0ba5213283c8",
+            "identifier": {
+              "value": "measlesContradictions"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Measles Complete Immunization workflow",
+          "focus": {
+            "reference": "StructureMap/0863635d-c78f-489c-9ffa-e49e8b58f576",
+            "identifier": {
+              "value": "measlesContradictions"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1HepatitisBLMToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1HepatitisBLMToResources",
+            "identifier": {
+              "value": "IMMZD1HepatitisBLMToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1HepatitisBQRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZD1HepatitisBQRToLM",
+            "identifier": {
+              "value": "IMMZD1HepatitisBQRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1HepatitisBQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1HepatitisBQRToResources",
+            "identifier": {
+              "value": "IMMZD1HepatitisBQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Client History IMMZD1LMToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1LMToResources",
+            "identifier": {
+              "value": "IMMZD1LMToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Client History IMMZD1QRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1QRToResources",
+            "identifier": {
+              "value": "IMMZD1QRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1MeaslesLMToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1MeaslesLMToResources",
+            "identifier": {
+              "value": "IMMZD1MeaslesLMToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1MeaslesQRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZD1MeaslesQRToLM",
+            "identifier": {
+              "value": "IMMZD1MeaslesQRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1MeaslesQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1MeaslesQRToResources",
+            "identifier": {
+              "value": "IMMZD1MeaslesQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1PolioLMToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1PolioLMToResources",
+            "identifier": {
+              "value": "IMMZD1PolioLMToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1PolioQRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZD1PolioQRToLM",
+            "identifier": {
+              "value": "IMMZD1PolioQRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1PolioQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1PolioQRToResources",
+            "identifier": {
+              "value": "IMMZD1PolioQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1QRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZD1QRToLM",
+            "identifier": {
+              "value": "IMMZD1QRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1YellowFeverQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1YellowFeverQRToResources",
+            "identifier": {
+              "value": "IMMZD1YellowFeverQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5LMToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD5LMToResources",
+            "identifier": {
+              "value": "IMMZD5LMToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5QRToLM",
+          "focus": {
+            "reference": "StructureMap/IMMZD5QRToLM",
+            "identifier": {
+              "value": "IMMZD5QRToLM"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5QRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD5QRToResources",
+            "identifier": {
+              "value": "IMMZD5QRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1DTPQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1DTPQRToResources",
+            "identifier": {
+              "value": "IMMZD1DTPQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1MumpsQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1MumpsQRToResources",
+            "identifier": {
+              "value": "IMMZD1MumpsQRToResources"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1RubellaQRToResources",
+          "focus": {
+            "reference": "StructureMap/IMMZD1RubellaQRToResources",
+            "identifier": {
+              "value": "IMMZD1RubellaQRToResources"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "PlanDefinitions",
+      "mode": "working",
+      "section": [
+        {
+          "title": "Child Immunization",
+          "focus": {
+            "reference": "PlanDefinition/254efa5e-92be-4735-a652-e2990d549c30",
+            "identifier": {
+              "value": "ChildImmunization"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Child Vaccination",
+          "focus": {
+            "reference": "PlanDefinition/231ef3a0-fbc1-41b6-b80d-2c004af6719a",
+            "identifier": {
+              "value": "Child Immunization"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPDelayed",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTDTPDelayed",
+            "identifier": {
+              "value": "IMMZD2DTDTPDelayed"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPOnTime",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTDTPOnTime",
+            "identifier": {
+              "value": "IMMZD2DTDTPOnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTDTPPregnancy",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy3",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTDTPPregnancy3",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy3"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy4",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTDTPPregnancy4",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy4"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB3Delayed",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTHepatitisB3Delayed",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB3Delayed"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB3OnTime",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTHepatitisB3OnTime",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB3OnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB4OnTime",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTHepatitisB4OnTime",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB4OnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisBBirth",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTHepatitisBBirth",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisBBirth"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeasles",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMeasles",
+            "identifier": {
+              "value": "IMMZD2DTMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesDose0",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMeaslesDose0",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesDose0"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesHighTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMeaslesHighTx",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesLowTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMeaslesLowTx",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesSupp",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMeaslesSupp",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesSupp"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMumps",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTMumps",
+            "identifier": {
+              "value": "IMMZD2DTMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioBirth",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTPolioBirth",
+            "identifier": {
+              "value": "IMMZD2DTPolioBirth"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPoliobOPVIPV",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTPoliobOPVIPV",
+            "identifier": {
+              "value": "IMMZD2DTPoliobOPVIPV"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioIPVOnly",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTPolioIPVOnly",
+            "identifier": {
+              "value": "IMMZD2DTPolioIPVOnly"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioSequential",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTPolioSequential",
+            "identifier": {
+              "value": "IMMZD2DTPolioSequential"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaHigh",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTRubellaHigh",
+            "identifier": {
+              "value": "IMMZD2DTRubellaHigh"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaLow",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTRubellaLow",
+            "identifier": {
+              "value": "IMMZD2DTRubellaLow"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTYellowFever",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD2DTYellowFever",
+            "identifier": {
+              "value": "IMMZD2DTYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTDTP",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTDTP",
+            "identifier": {
+              "value": "IMMZD5DTDTP"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTHepatitisB",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTHepatitisB",
+            "identifier": {
+              "value": "IMMZD5DTHepatitisB"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMeasles",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTMeasles",
+            "identifier": {
+              "value": "IMMZD5DTMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMumps",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTMumps",
+            "identifier": {
+              "value": "IMMZD5DTMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTPolio",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTPolio",
+            "identifier": {
+              "value": "IMMZD5DTPolio"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTRubella",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTRubella",
+            "identifier": {
+              "value": "IMMZD5DTRubella"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTYellowFever",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD5DTYellowFever",
+            "identifier": {
+              "value": "IMMZD5DTYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesDose0HighTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SMeaslesDose0HighTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesDose0HighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesDose0LowTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SMeaslesDose0LowTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesDose0LowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesHighTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SMeaslesHighTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesLowTx",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SMeaslesLowTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesSupp",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SMeaslesSupp",
+            "identifier": {
+              "value": "IMMZD18SMeaslesSupp"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SYellowFever",
+          "focus": {
+            "reference": "PlanDefinition/IMMZD18SYellowFever",
+            "identifier": {
+              "value": "IMMZD18SYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZDTUmbrella",
+          "focus": {
+            "reference": "PlanDefinition/IMMZDTUmbrella",
+            "identifier": {
+              "value": "IMMZDTUmbrella"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "Library",
+      "mode": "working",
+      "section": [
+        {
+          "title": "FHIRCommon",
+          "focus": {
+            "reference": "Library/FHIRCommon",
+            "identifier": {
+              "value": "FHIRCommon"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "FHIRHelpers",
+          "focus": {
+            "reference": "Library/FHIRHelpers",
+            "identifier": {
+              "value": "FHIRHelpers"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZCommon",
+          "focus": {
+            "reference": "Library/IMMZCommon",
+            "identifier": {
+              "value": "IMMZCommon"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZCommonIzDataElements",
+          "focus": {
+            "reference": "Library/IMMZCommonIzDataElements",
+            "identifier": {
+              "value": "IMMZCommonIzDataElements"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZConcepts",
+          "focus": {
+            "reference": "Library/IMMZConcepts",
+            "identifier": {
+              "value": "IMMZConcepts"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZConfig",
+          "focus": {
+            "reference": "Library/IMMZConfig",
+            "identifier": {
+              "value": "IMMZConfig"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPDelayed",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPDelayed",
+            "identifier": {
+              "value": "IMMZD2DTDTPDelayed"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPInput",
+            "identifier": {
+              "value": "IMMZD2DTDTPInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPOnTime",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPOnTime",
+            "identifier": {
+              "value": "IMMZD2DTDTPOnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPPregnancy",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy3",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPPregnancy3",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy3"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPPregnancy4",
+          "focus": {
+            "reference": "Library/IMMZD2DTDTPPregnancy4",
+            "identifier": {
+              "value": "IMMZD2DTDTPPregnancy4"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB3Delayed",
+          "focus": {
+            "reference": "Library/IMMZD2DTHepatitisB3Delayed",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB3Delayed"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB3OnTime",
+          "focus": {
+            "reference": "Library/IMMZD2DTHepatitisB3OnTime",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB3OnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisB4OnTime",
+          "focus": {
+            "reference": "Library/IMMZD2DTHepatitisB4OnTime",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisB4OnTime"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisBBirth",
+          "focus": {
+            "reference": "Library/IMMZD2DTHepatitisBBirth",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisBBirth"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisBInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTHepatitisBInput",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisBInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeasles",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeasles",
+            "identifier": {
+              "value": "IMMZD2DTMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesDose0",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeaslesDose0",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesDose0"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesHighTx",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeaslesHighTx",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeaslesInput",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesLowTx",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeaslesLowTx",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesSupp",
+          "focus": {
+            "reference": "Library/IMMZD2DTMeaslesSupp",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesSupp"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMumps",
+          "focus": {
+            "reference": "Library/IMMZD2DTMumps",
+            "identifier": {
+              "value": "IMMZD2DTMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMumpsInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTMumpsInput",
+            "identifier": {
+              "value": "IMMZD2DTMumpsInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioBirth",
+          "focus": {
+            "reference": "Library/IMMZD2DTPolioBirth",
+            "identifier": {
+              "value": "IMMZD2DTPolioBirth"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPoliobOPVIPV",
+          "focus": {
+            "reference": "Library/IMMZD2DTPoliobOPVIPV",
+            "identifier": {
+              "value": "IMMZD2DTPoliobOPVIPV"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTPolioInput",
+            "identifier": {
+              "value": "IMMZD2DTPolioInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioIPVOnly",
+          "focus": {
+            "reference": "Library/IMMZD2DTPolioIPVOnly",
+            "identifier": {
+              "value": "IMMZD2DTPolioIPVOnly"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioSequential",
+          "focus": {
+            "reference": "Library/IMMZD2DTPolioSequential",
+            "identifier": {
+              "value": "IMMZD2DTPolioSequential"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaHigh",
+          "focus": {
+            "reference": "Library/IMMZD2DTRubellaHigh",
+            "identifier": {
+              "value": "IMMZD2DTRubellaHigh"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTRubellaInput",
+            "identifier": {
+              "value": "IMMZD2DTRubellaInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaLow",
+          "focus": {
+            "reference": "Library/IMMZD2DTRubellaLow",
+            "identifier": {
+              "value": "IMMZD2DTRubellaLow"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTYellowFever",
+          "focus": {
+            "reference": "Library/IMMZD2DTYellowFever",
+            "identifier": {
+              "value": "IMMZD2DTYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTYellowFeverInput",
+          "focus": {
+            "reference": "Library/IMMZD2DTYellowFeverInput",
+            "identifier": {
+              "value": "IMMZD2DTYellowFeverInput"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTDTP",
+          "focus": {
+            "reference": "Library/IMMZD5DTDTP",
+            "identifier": {
+              "value": "IMMZD5DTDTP"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTHepatitisB",
+          "focus": {
+            "reference": "Library/IMMZD5DTHepatitisB",
+            "identifier": {
+              "value": "IMMZD5DTHepatitisB"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMeasles",
+          "focus": {
+            "reference": "Library/IMMZD5DTMeasles",
+            "identifier": {
+              "value": "IMMZD5DTMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMeaslesCI",
+          "focus": {
+            "reference": "Library/IMMZD5DTMeaslesCI",
+            "identifier": {
+              "value": "IMMZD5DTMeaslesCI"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMumps",
+          "focus": {
+            "reference": "Library/IMMZD5DTMumps",
+            "identifier": {
+              "value": "IMMZD5DTMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTPolio",
+          "focus": {
+            "reference": "Library/IMMZD5DTPolio",
+            "identifier": {
+              "value": "IMMZD5DTPolio"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTRubella",
+          "focus": {
+            "reference": "Library/IMMZD5DTRubella",
+            "identifier": {
+              "value": "IMMZD5DTRubella"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTYellowFever",
+          "focus": {
+            "reference": "Library/IMMZD5DTYellowFever",
+            "identifier": {
+              "value": "IMMZD5DTYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesDose0",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesDose0",
+            "identifier": {
+              "value": "IMMZD18SMeaslesDose0"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesDose0HighTx",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesDose0HighTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesDose0HighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesDose0LowTx",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesDose0LowTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesDose0LowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesHighTx",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesHighTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesLowTx",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesLowTx",
+            "identifier": {
+              "value": "IMMZD18SMeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SMeaslesSupp",
+          "focus": {
+            "reference": "Library/IMMZD18SMeaslesSupp",
+            "identifier": {
+              "value": "IMMZD18SMeaslesSupp"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD18SYellowFever",
+          "focus": {
+            "reference": "Library/IMMZD18SYellowFever",
+            "identifier": {
+              "value": "IMMZD18SYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND07MeaslesHighTx",
+          "focus": {
+            "reference": "Library/IMMZIND07MeaslesHighTx",
+            "identifier": {
+              "value": "IMMZIND07MeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND07MeaslesLowTx",
+          "focus": {
+            "reference": "Library/IMMZIND07MeaslesLowTx",
+            "identifier": {
+              "value": "IMMZIND07MeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND08Measles",
+          "focus": {
+            "reference": "Library/IMMZIND08Measles",
+            "identifier": {
+              "value": "IMMZIND08Measles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND26YellowFever",
+          "focus": {
+            "reference": "Library/IMMZIND26YellowFever",
+            "identifier": {
+              "value": "IMMZIND26YellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND40Measles",
+          "focus": {
+            "reference": "Library/IMMZIND40Measles",
+            "identifier": {
+              "value": "IMMZIND40Measles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIndicatorCommon",
+          "focus": {
+            "reference": "Library/IMMZIndicatorCommon",
+            "identifier": {
+              "value": "IMMZIndicatorCommon"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZINDMeasles",
+          "focus": {
+            "reference": "Library/IMMZINDMeasles",
+            "identifier": {
+              "value": "IMMZINDMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZINDYellowFever",
+          "focus": {
+            "reference": "Library/IMMZINDYellowFever",
+            "identifier": {
+              "value": "IMMZINDYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZStratifiers",
+          "focus": {
+            "reference": "Library/IMMZStratifiers",
+            "identifier": {
+              "value": "IMMZStratifiers"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZVaccineLibrary",
+          "focus": {
+            "reference": "Library/IMMZVaccineLibrary",
+            "identifier": {
+              "value": "IMMZVaccineLibrary"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "WHOCommon",
+          "focus": {
+            "reference": "Library/WHOCommon",
+            "identifier": {
+              "value": "WHOCommon"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "WHOConcepts",
+          "focus": {
+            "reference": "Library/WHOConcepts",
+            "identifier": {
+              "value": "WHOConcepts"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "ActivityDefinition",
+      "mode": "working",
+      "section": [
+        {
+          "title": "IMMZD2DTCR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTCR",
+            "identifier": {
+              "value": "IMMZD2DTCR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTDTPMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTDTPMR",
+            "identifier": {
+              "value": "IMMZD2DTDTPMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTHepatitisBMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTHepatitisBMR",
+            "identifier": {
+              "value": "IMMZD2DTHepatitisBMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMeaslesMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTMeaslesMR",
+            "identifier": {
+              "value": "IMMZD2DTMeaslesMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTMumpsMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTMumpsMR",
+            "identifier": {
+              "value": "IMMZD2DTMumpsMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPertussisMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTPertussisMR",
+            "identifier": {
+              "value": "IMMZD2DTPertussisMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPoliobOPVMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTPoliobOPVMR",
+            "identifier": {
+              "value": "IMMZD2DTPoliobOPVMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTPolioIPVMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTPolioIPVMR",
+            "identifier": {
+              "value": "IMMZD2DTPolioIPVMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTRubellaMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTRubellaMR",
+            "identifier": {
+              "value": "IMMZD2DTRubellaMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTTetanusDiphtheraMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTTetanusDiphtheraMR",
+            "identifier": {
+              "value": "IMMZD2DTTetanusDiphtheraMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD2DTYellowFeverMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD2DTYellowFeverMR",
+            "identifier": {
+              "value": "IMMZD2DTYellowFeverMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTDTPMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTDTPMR",
+            "identifier": {
+              "value": "IMMZD5DTDTPMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMeaslesMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTMeaslesMR",
+            "identifier": {
+              "value": "IMMZD5DTMeaslesMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTMumpsMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTMumpsMR",
+            "identifier": {
+              "value": "IMMZD5DTMumpsMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTPoliobOPVMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTPoliobOPVMR",
+            "identifier": {
+              "value": "IMMZD5DTPoliobOPVMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTRubellaMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTRubellaMR",
+            "identifier": {
+              "value": "IMMZD5DTRubellaMR"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5DTYellowFeverMR",
+          "focus": {
+            "reference": "ActivityDefinition/IMMZD5DTYellowFeverMR",
+            "identifier": {
+              "value": "IMMZD5DTYellowFeverMR"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "ValueSet",
+      "mode": "working",
+      "section": [
+        {
+          "title": "ARVDrugs-values",
+          "focus": {
+            "reference": "ValueSet/ARVDrugs-values",
+            "identifier": {
+              "value": "ARVDrugs-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Birthweight-values",
+          "focus": {
+            "reference": "ValueSet/Birthweight-values",
+            "identifier": {
+              "value": "Birthweight-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "HIVstatus-values",
+          "focus": {
+            "reference": "ValueSet/HIVstatus-values",
+            "identifier": {
+              "value": "HIVstatus-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Immunocompromised-values",
+          "focus": {
+            "reference": "ValueSet/Immunocompromised-values",
+            "identifier": {
+              "value": "Immunocompromised-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.C.DE5",
+          "focus": {
+            "reference": "ValueSet/IMMZ.C.DE5",
+            "identifier": {
+              "value": "IMMZ.C.DE5"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE1",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE1",
+            "identifier": {
+              "value": "IMMZ.D.DE1"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE5",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE5",
+            "identifier": {
+              "value": "IMMZ.D.DE5"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE18",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE18",
+            "identifier": {
+              "value": "IMMZ.D.DE18"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE19",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE19",
+            "identifier": {
+              "value": "IMMZ.D.DE19"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE21",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE21",
+            "identifier": {
+              "value": "IMMZ.D.DE21"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE22",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE22",
+            "identifier": {
+              "value": "IMMZ.D.DE22"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE23",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE23",
+            "identifier": {
+              "value": "IMMZ.D.DE23"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE25",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE25",
+            "identifier": {
+              "value": "IMMZ.D.DE25"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE86",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE86",
+            "identifier": {
+              "value": "IMMZ.D.DE86"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE95",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE95",
+            "identifier": {
+              "value": "IMMZ.D.DE95"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE107",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE107",
+            "identifier": {
+              "value": "IMMZ.D.DE107"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE115",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE115",
+            "identifier": {
+              "value": "IMMZ.D.DE115"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE126",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE126",
+            "identifier": {
+              "value": "IMMZ.D.DE126"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE156",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE156",
+            "identifier": {
+              "value": "IMMZ.D.DE156"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.DE161",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D.DE161",
+            "identifier": {
+              "value": "IMMZ.D.DE161"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE10",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE10",
+            "identifier": {
+              "value": "IMMZ.D1.DE10"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE35",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE35",
+            "identifier": {
+              "value": "IMMZ.D1.DE35"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE52",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE52",
+            "identifier": {
+              "value": "IMMZ.D1.DE52"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE56",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE56",
+            "identifier": {
+              "value": "IMMZ.D1.DE56"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE61",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE61",
+            "identifier": {
+              "value": "IMMZ.D1.DE61"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE65",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE65",
+            "identifier": {
+              "value": "IMMZ.D1.DE65"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE68",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE68",
+            "identifier": {
+              "value": "IMMZ.D1.DE68"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE73",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE73",
+            "identifier": {
+              "value": "IMMZ.D1.DE73"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE77",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE77",
+            "identifier": {
+              "value": "IMMZ.D1.DE77"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE84",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE84",
+            "identifier": {
+              "value": "IMMZ.D1.DE84"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE87",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE87",
+            "identifier": {
+              "value": "IMMZ.D1.DE87"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE99",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE99",
+            "identifier": {
+              "value": "IMMZ.D1.DE99"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE103",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE103",
+            "identifier": {
+              "value": "IMMZ.D1.DE103"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.I.DE30",
+          "focus": {
+            "reference": "ValueSet/IMMZ.I.DE30",
+            "identifier": {
+              "value": "IMMZ.I.DE30"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.I.DE48",
+          "focus": {
+            "reference": "ValueSet/IMMZ.I.DE48",
+            "identifier": {
+              "value": "IMMZ.I.DE48"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE6",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE6",
+            "identifier": {
+              "value": "IMMZ.Z.DE6"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE9",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE9",
+            "identifier": {
+              "value": "IMMZ.Z.DE9"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE11",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE11",
+            "identifier": {
+              "value": "IMMZ.Z.DE11"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE12",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE12",
+            "identifier": {
+              "value": "IMMZ.Z.DE12"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE14.bOPV",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE14.bOPV",
+            "identifier": {
+              "value": "IMMZ.Z.DE14.bOPV"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE14.IPV",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE14.IPV",
+            "identifier": {
+              "value": "IMMZ.Z.DE14.IPV"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE14",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE14",
+            "identifier": {
+              "value": "IMMZ.Z.DE14"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE17",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE17",
+            "identifier": {
+              "value": "IMMZ.Z.DE17"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE23",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE23",
+            "identifier": {
+              "value": "IMMZ.Z.DE23"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE24",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE24",
+            "identifier": {
+              "value": "IMMZ.Z.DE24"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE28",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE28",
+            "identifier": {
+              "value": "IMMZ.Z.DE28"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE30",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE30",
+            "identifier": {
+              "value": "IMMZ.Z.DE30"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE31",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE31",
+            "identifier": {
+              "value": "IMMZ.Z.DE31"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.Z.DE32",
+          "focus": {
+            "reference": "ValueSet/IMMZ.Z.DE32",
+            "identifier": {
+              "value": "IMMZ.Z.DE32"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "LiveAttenuatedVaccines",
+          "focus": {
+            "reference": "ValueSet/LiveAttenuatedVaccines",
+            "identifier": {
+              "value": "LiveAttenuatedVaccines"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "Negativetestresult-values",
+          "focus": {
+            "reference": "ValueSet/Negativetestresult-values",
+            "identifier": {
+              "value": "Negativetestresult-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "PositiveTestResult-values",
+          "focus": {
+            "reference": "ValueSet/PositiveTestResult-values",
+            "identifier": {
+              "value": "PositiveTestResult-values"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.DE103",
+          "focus": {
+            "reference": "ValueSet/IMMZ.D1.DE103",
+            "identifier": {
+              "value": "IMMZ.D1.DE103"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "CodeSystem",
+      "mode": "working",
+      "section": [
+        {
+          "title": "IMMZ.C",
+          "focus": {
+            "reference": "CodeSystem/IMMZ.C",
+            "identifier": {
+              "value": "IMMZ.C"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D",
+          "focus": {
+            "reference": "CodeSystem/IMMZ.D",
+            "identifier": {
+              "value": "IMMZ.D"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1",
+          "focus": {
+            "reference": "CodeSystem/IMMZ.D1",
+            "identifier": {
+              "value": "IMMZ.D1"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.I",
+          "focus": {
+            "reference": "CodeSystem/IMMZ.I",
+            "identifier": {
+              "value": "IMMZ.I"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "ConceptMap",
+      "mode": "working",
+      "section": [
+        {
+          "title": "IMMZ.C.ConceptMap",
+          "focus": {
+            "reference": "ConceptMap/IMMZ.C.ConceptMap",
+            "identifier": {
+              "value": "IMMZ.C.ConceptMap"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.C.SexToAdministrativeGender",
+          "focus": {
+            "reference": "ConceptMap/IMMZ.C.SexToAdministrativeGender",
+            "identifier": {
+              "value": "IMMZ.C.SexToAdministrativeGender"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D.ConceptMap",
+          "focus": {
+            "reference": "ConceptMap/IMMZ.D.ConceptMap",
+            "identifier": {
+              "value": "IMMZ.D.ConceptMap"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZ.D1.ConceptMap",
+          "focus": {
+            "reference": "ConceptMap/IMMZ.D1.ConceptMap",
+            "identifier": {
+              "value": "IMMZ.D1.ConceptMap"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "Device",
+      "mode": "working",
+      "section": [
+        {
+          "title": "cqf-tooling",
+          "focus": {
+            "reference": "Device/cqf-tooling",
+            "identifier": {
+              "value": "cqf-tooling"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "Measure",
+      "mode": "working",
+      "section": [
+        {
+          "title": "IMMZIND07MeaslesHighTx",
+          "focus": {
+            "reference": "Measure/IMMZIND07MeaslesHighTx",
+            "identifier": {
+              "value": "IMMZIND07MeaslesHighTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND07MeaslesLowTx",
+          "focus": {
+            "reference": "Measure/IMMZIND07MeaslesLowTx",
+            "identifier": {
+              "value": "IMMZIND07MeaslesLowTx"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND08Measles",
+          "focus": {
+            "reference": "Measure/IMMZIND08Measles",
+            "identifier": {
+              "value": "IMMZIND08Measles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND26YellowFever",
+          "focus": {
+            "reference": "Measure/IMMZIND26YellowFever",
+            "identifier": {
+              "value": "IMMZIND26YellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZIND40Measles",
+          "focus": {
+            "reference": "Measure/IMMZIND40Measles",
+            "identifier": {
+              "value": "IMMZIND40Measles"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    },
+    {
+      "title": "StructureDefinition",
+      "mode": "working",
+      "section": [
+        {
+          "title": "IMMZCRegisterClient",
+          "focus": {
+            "reference": "StructureDefinition/IMMZCRegisterClient",
+            "identifier": {
+              "value": "IMMZCRegisterClient"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistory",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistory",
+            "identifier": {
+              "value": "IMMZD1ClientHistory"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryDTP",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryDTP",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryDTP"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryHepatitisB",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryHepatitisB",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryHepatitisB"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryMeasles",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryMeasles",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryMeasles"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryMumps",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryMumps",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryMumps"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryPolio",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryPolio",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryPolio"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryRubella",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryRubella",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryRubella"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD1ClientHistoryYellowFever",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD1ClientHistoryYellowFever",
+            "identifier": {
+              "value": "IMMZD1ClientHistoryYellowFever"
+            }
+          },
+          "mode": "working"
+        },
+        {
+          "title": "IMMZD5CheckContraindications",
+          "focus": {
+            "reference": "StructureDefinition/IMMZD5CheckContraindications",
+            "identifier": {
+              "value": "IMMZD5CheckContraindications"
+            }
+          },
+          "mode": "working"
+        }
+      ]
+    }
+  ]
+}

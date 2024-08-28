@@ -1,0 +1,89 @@
+{
+  "appId": "eir",
+  "configType": "navigation",
+  "menuActionButton": {
+    "id": "mainActionButton",
+    "visible": true,
+    "display": "Register Child",
+    "actions": [
+      {
+        "trigger": "ON_CLICK",
+        "workflow": "LAUNCH_QUESTIONNAIRE",
+        "questionnaire": {
+          "id": "QIMMZCRegisterClient",
+          "title": "Register Child",
+          "saveButtonText": "Register Child",
+          "groupResource": {
+            "groupIdentifier": "@{familyLogicalId}",
+            "memberResourceType": "Patient"
+          },
+          "snackBarMessage": {
+            "message": "Child registered successfully",
+            "actionLabel": "",
+            "duration": "Short"
+          },
+          "configRules": [
+            {
+              "name": "humanReadableId",
+              "condition": "true",
+              "actions": [
+                "data.put('humanReadableId', service.generateRandomSixDigitInt())"
+              ]
+            }
+          ],
+          "extraParams": [
+            {
+              "paramType": "PREPOPULATE",
+              "linkId": "0d77d40f-098b-4329-9199-33b6e77aa864",
+              "dataType": "INTEGER",
+              "key": "opensrpId",
+              "value": "@{humanReadableId}"
+            }
+          ],
+          "setPractitionerDetails": true,
+          "setOrganizationDetails": true
+        }
+      }
+    ]
+  },
+  "clientRegisters": [
+    {
+      "id": "childRegister",
+      "display": "Children",
+      "showCount": true,
+      "menuIconConfig": {
+        "type": "local",
+        "reference": "ic_children"
+      },
+      "actions": [
+        {
+          "trigger": "ON_CLICK",
+          "workflow": "LAUNCH_REGISTER",
+          "id": "childRegister"
+        },
+        {
+          "trigger": "ON_COUNT",
+          "id": "childRegister"
+        }
+      ]
+    }
+  ],
+  "staticMenu": [
+    {
+      "id": "settings",
+      "visible": true,
+      "display": "Settings",
+      "menuIconConfig": {
+        "type": "local",
+        "reference": "ic_settings"
+      },
+      "actions": [
+        {
+          "trigger": "ON_CLICK",
+          "workflow": "LAUNCH_SETTINGS",
+          "id": "navigateToSettingsScreen"
+        }
+      ]
+    }
+  ]
+}

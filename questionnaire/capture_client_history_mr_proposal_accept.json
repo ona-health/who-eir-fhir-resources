@@ -1,0 +1,88 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "d9a6dbf5-3529-4a3c-9b38-92ffb4e7bd89",
+  "title": "MR Proposal form",
+  "status": "active",
+  "meta": {
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "date": "2023-10-24T00:00:00+02:00",
+  "subjectType": [
+    "Patient"
+  ],
+  "item": [
+    {
+      "linkId": "79a24870-3575-4302-8aae-b66fed802fb7",
+      "type": "choice",
+      "text": "Do you approve this proposal?",
+      "required": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "72425777-f3f9-409c-cb1a-be88adf34472",
+            "code": "yes",
+            "system": "urn:uuid:380622bf-8173-48b6-fc09-31667b399ef4",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "76eadd0b-0182-4f66-f812-f7551c54f8bb",
+            "code": "no",
+            "system": "urn:uuid:380622bf-8173-48b6-fc09-31667b399ef4",
+            "display": "No"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "radio-button"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "linkId": "1e04fcd0-0fd5-42c1-a00b-b3addd629d13",
+      "text": "Reason for rejection",
+      "enableWhen": [
+        {
+          "question": "79a24870-3575-4302-8aae-b66fed802fb7",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:380622bf-8173-48b6-fc09-31667b399ef4",
+            "code": "no"
+          }
+        }
+      ],
+      "enableBehavior": "all",
+      "required": false
+    },
+    {
+      "linkId": "c1d8fed1-ff36-43b6-8061-22561154b13b",
+      "type": "string",
+      "text": "MedicationRequest ",
+      "required": false,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+          "valueBoolean": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "d4f9bfbe-b684-4505-9c66-719afd5c9fca",
+  "title": "Administer Child Immunization",
+  "description": "Administer Child Immunization",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "ae9c1118-4572-4f9b-8c88-ec9429aa4ec0",
+      "type": "choice",
+      "text": "Do you consent to get this immunization?",
+      "required": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "703c3743-cfb9-480a-8fbd-4963779aa271",
+            "code": "Yes",
+            "system": "urn:uuid:e4075c84-397e-4c71-dd66-52cbfe998373",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "f17a5469-9e60-4138-8b0c-146e1f1c2f1b",
+            "code": "No",
+            "system": "urn:uuid:e4075c84-397e-4c71-dd66-52cbfe998373",
+            "display": "No"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "5d887ed0-0c4f-4be6-8f96-63c75346ad42",
+      "type": "choice",
+      "text": "Do you have stock?",
+      "required": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "acb3fac1-d436-48aa-864a-ba06f78cf93a",
+            "code": "Yes",
+            "system": "urn:uuid:a6a1f0cb-e35d-4ed4-909e-eb401ffa9a3b",
+            "display": "Yes"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "21359d86-866a-4486-85ea-149994ea87b9",
+            "code": "No",
+            "system": "urn:uuid:a6a1f0cb-e35d-4ed4-909e-eb401ffa9a3b",
+            "display": "No"
+          }
+        }
+      ],
+      "enableWhen": [
+        {
+          "question": "ae9c1118-4572-4f9b-8c88-ec9429aa4ec0",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:e4075c84-397e-4c71-dd66-52cbfe998373",
+            "code": "Yes"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "c1d8fed1-ff36-43b6-8061-22561154b13b",
+      "type": "string",
+      "text": "MedicationRequest ",
+      "required": false,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+          "valueBoolean": true
+        }
+      ]
+    }
+  ]
+}

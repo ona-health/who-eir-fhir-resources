@@ -1,0 +1,502 @@
+{
+  "appId": "eir",
+  "configType": "profile",
+  "id": "childProfileMeasles",
+  "fhirResource": {
+    "baseResource": {
+      "resource": "Patient"
+    },
+    "relatedResources": [
+      {
+        "resource": "CarePlan",
+        "searchParameter": "subject"
+      },
+      {
+        "id": "availableMedicationRequests",
+        "resource": "MedicationRequest",
+        "searchParameter": "subject"
+      },
+      {
+        "id": "availableImmunizations",
+        "resource": "Immunization",
+        "searchParameter": "patient"
+      },
+      {
+        "id": "availableFlags",
+        "resource": "Flag",
+        "searchParameter": "subject"
+      }
+    ]
+  },
+  "topAppBar": {
+    "title": {
+      "viewType": "COMPOUND_TEXT",
+      "primaryText": "@{patientName} profile",
+      "primaryTextColor": "#FFFFFF",
+      "fontSize": 16.0,
+      "maxLines": 1,
+      "primaryTextFontWeight": "BOLD"
+    },
+    "collapsible": false
+  },
+  "rules": [
+    {
+      "name": "patientFirstName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientFirstName', fhirPath.extractValue(Patient, \"Patient.name[0].select(given[0])\"))"
+      ]
+    },
+    {
+      "name": "patientMiddleName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientMiddleName', fhirPath.extractValue(Patient, \"Patient.name[0].select(text)\"))"
+      ]
+    },
+    {
+      "name": "patientLastName",
+      "condition": "true",
+      "actions": [
+        "data.put('patientLastName', fhirPath.extractValue(Patient, \"Patient.name[0].select(family)\"))"
+      ]
+    },
+    {
+      "name": "patientName",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientName', data.get('patientFirstName') + ' ' + data.get('patientMiddleName') + ' ' + data.get('patientLastName'))"
+      ]
+    },
+    {
+      "name": "patientActive",
+      "condition": "true",
+      "actions": [
+        "data.put('patientActive', fhirPath.extractValue(Patient, 'Patient.active'))"
+      ]
+    },
+    {
+      "name": "inactivePatient",
+      "condition": "true",
+      "actions": [
+        "data.put('inactivePatient', !data.get('patientActive'))"
+      ]
+    },
+    {
+      "name": "patientDod",
+      "condition": "true",
+      "priority": 1,
+      "actions": [
+        "data.put('patientDod', fhirPath.extractValue(Patient, 'Patient.deceased'))"
+      ]
+    },
+    {
+      "name": "patientDodFormatted",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientDodFormatted', service.formatDate(data.get('patientDod'), \"yyyy-MM-dd'T'HH:mm:ss.SSXXX\", \"dd MMM, yyyy\"))"
+      ]
+    },
+    {
+      "name": "patientDeceased",
+      "condition": "true",
+      "priority": 2,
+      "actions": [
+        "data.put('patientDeceased', data.get('patientDod').empty().not())"
+      ]
+    },
+    {
+      "name": "patientMuted",
+      "condition": "true",
+      "priority": 3,
+      "actions": [
+        "data.put('patientMuted', !data.get('patientActive') && data.get('patientDod').empty())"
+      ]
+    },
+    {
+      "name": "patientTextColor",
+      "condition": "true",
+      "priority": 4,
+      "actions": [
+        "data.put('patientTextColor', data.get('patientMuted') == 'true' || data.get('patientDeceased') == 'true' ? '#6F7274' : '#000000')"
+      ]
+    },
+    {
+      "name": "patientIdentifier",
+      "condition": "true",
+      "actions": [
+        "data.put('patientIdentifier', fhirPath.extractValue(Patient, 'Patient.identifier[0].value'))"
+      ]
+    },
+    {
+      "name": "patientId",
+      "condition": "true",
+      "actions": [
+        "data.put('patientId', fhirPath.extractValue(Patient, 'Patient.id'))"
+      ]
+    },
+    {
+      "name": "patientAge",
+      "condition": "true",
+      "actions": [
+        "data.put('patientAge', service.extractAge(Patient))"
+      ]
+    },
+    {
+      "name": "patientAgeInYears",
+      "condition": "true",
+      "actions": [
+        "data.put('patientAgeInYears', fhirPath.extractValue(Patient, \"(today().toString().substring(0, 4).toInteger() - Patient.birthDate.toString().substring(0, 4).toInteger())\"))"
+      ]
+    },
+    {
+      "name": "childCardVisible",
+      "condition": "true",
+      "actions": [
+        "data.put('childCardVisible', data.get('patientAge') == 'true' && data.get('patientAge')<=5)"
+      ]
+    },
+    {
+      "name": "patientGender",
+      "condition": "true",
+      "actions": [
+        "data.put('patientGender', service.extractGender(Patient))"
+      ]
+    },
+    {
+      "name": "patientDOB",
+      "condition": "true",
+      "actions": [
+        "data.put('patientDOB', service.extractDOB(Patient, 'dd/MM/yyyy'))"
+      ]
+    },
+    {
+      "name": "birthDate",
+      "condition": "true",
+      "actions": [
+        "data.put('birthDate', fhirPath.extractValue(Patient, 'Patient.birthDate'))"
+      ]
+    },
+    {
+      "name": "clientHistoryCheck",
+      "condition": "true",
+      "actions": [
+        "data.put('clientHistoryCheck', availableFlags.size() > 0 ? 'COMPLETED' : 'DUE')"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "viewType": "CARD",
+      "padding": 0,
+      "content": [
+        {
+          "viewType": "COLUMN",
+          "children": [
+            {
+              "viewType": "COMPOUND_TEXT",
+              "primaryText": "@{patientName}",
+              "primaryTextColor": "@{patientTextColor}"
+            },
+            {
+              "visible": "@{patientMuted}",
+              "viewType": "COMPOUND_TEXT",
+              "primaryText": "{{ patient.is.muted }}",
+              "fontSize": 12.0,
+              "primaryTextColor": "#FF0000"
+            },
+            {
+              "visible": "@{patientDeceased}",
+              "viewType": "COMPOUND_TEXT",
+              "primaryText": "Deceased: @{patientDodFormatted}",
+              "fontSize": 12.0,
+              "primaryTextColor": "#FF0000"
+            },
+            {
+              "viewType": "SPACER",
+              "height": 10
+            },
+            {
+              "viewType": "COMPOUND_TEXT",
+              "primaryText": "ID: #@{patientIdentifier}",
+              "primaryTextColor": "@{patientTextColor}"
+            },
+            {
+              "viewType": "SPACER",
+              "height": 10
+            },
+            {
+              "viewType": "PERSONAL_DATA",
+              "personalDataItems": [
+                {
+                  "label": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "Sex",
+                    "primaryTextColor": "@{patientTextColor}"
+                  },
+                  "displayValue": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "@{patientGender}",
+                    "fontSize": 14,
+                    "primaryTextColor": "@{patientTextColor}"
+                  }
+                },
+                {
+                  "label": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "Age",
+                    "primaryTextColor": "@{patientTextColor}"
+                  },
+                  "displayValue": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "@{patientAge}",
+                    "fontSize": 14,
+                    "primaryTextColor": "@{patientTextColor}"
+                  }
+                },
+                {
+                  "label": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "DOB",
+                    "primaryTextColor": "@{patientTextColor}"
+                  },
+                  "displayValue": {
+                    "viewType": "COMPOUND_TEXT",
+                    "primaryText": "@{patientDOB}",
+                    "fontSize": 14,
+                    "primaryTextColor": "@{patientTextColor}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "viewType": "SPACER",
+      "height": 8
+    },
+    {
+      "viewType": "COLUMN",
+      "children": [
+        {
+          "viewType": "CARD",
+          "visible": true,
+          "padding": 16,
+          "headerAction": {
+            "viewType": "COMPOUND_TEXT",
+            "visible": true,
+            "primaryTextColor": "infoColor",
+            "fontSize": 18.0,
+            "padding": 16,
+            "clickable": true,
+            "maxLines": 1,
+            "textOverflow": "ELLIPSIS"
+          },
+          "content": [
+            {
+              "viewType": "COLUMN",
+              "children": [
+                {
+                  "viewType": "BUTTON",
+                  "smallSized": "true",
+                  "text": "Capture Client History",
+                  "status": "@{clientHistoryCheck}",
+                  "visible": "true",
+                  "enabled": "@{patientActive}",
+                  "actions": [
+                    {
+                      "trigger": "ON_CLICK",
+                      "workflow": "LAUNCH_QUESTIONNAIRE",
+                      "questionnaire": {
+                        "id": "IMMZD1ClientHistoryMeasles",
+                        "title": "Capture Client History",
+                        "saveButtonText": "Save",
+                        "resourceIdentifier": "@{patientId}",
+                        "generateCarePlanWithWorkflowApi": true,
+                        "planDefinitions": [
+                          "IMMZD2DTMeasles",
+                          "IMMZD2DTMeaslesDose0",
+                          "IMMZD2DTMeaslesHighTx",
+                          "IMMZD2DTMeaslesLowTx",
+                          "IMMZD2DTMeaslesSupp",
+                          "IMMZD2DTPolioBirth",
+                          "IMMZD2DTPoliobOPVIPV",
+                          "IMMZD2DTPolioIPVOnly",
+                          "IMMZD2DTPolioSequential",
+                          "IMMZD2DTYellowFever",
+                          "IMMZD5DTMeasles",
+                          "IMMZD5DTPolio",
+                          "IMMZD5DTYellowFever",
+                          "IMMZD18SMeaslesDose0HighTx",
+                          "IMMZD18SMeaslesDose0LowTx",
+                          "IMMZD18SMeaslesHighTx",
+                          "IMMZD18SMeaslesLowTx",
+                          "IMMZD18SMeaslesSupp",
+                          "IMMZD18SYellowFever",
+                          "IMMZDTUmbrella"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "viewType": "LIST",
+                  "id": "medicationRequests",
+                  "resources": [
+                    {
+                      "id": "availableMedicationRequests",
+                      "relatedResourceId": "availableMedicationRequests",
+                      "resourceType": "MedicationRequest",
+                      "conditionalFhirPathExpression": "(MedicationRequest.status != 'cancelled')"
+                    }
+                  ],
+                  "emptyList": {
+                    "message": "No Medication Requests available for this patient at the moment"
+                  },
+                  "registerCard": {
+                    "rules": [
+                      {
+                        "name": "medicationRequestStatus",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestStatus', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.status'))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestStatusColorCode",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestStatusColorCode', service.generateMedicationServiceStatus(MedicationRequest))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestExecutionStartDate",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestExecutionStartDate', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.dispenseRequest.validityPeriod.start'))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestPeriodDueDate",
+                        "condition": "true",
+                        "priority": 2,
+                        "actions": [
+                          "data.put('medicationRequestPeriodDueDate', service.formatDate(data.get('medicationRequestExecutionStartDate'), \"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\", \"dd/MM/yyyy\"))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestDescription",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestDescription', fhirPath.extractValue(MedicationRequest, \"MedicationRequest.reasonCode.where(coding.code = '1000001').text\"))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestDescriptionWithStartDate",
+                        "condition": "true",
+                        "priority": 3,
+                        "actions": [
+                          "data.put('medicationRequestDescriptionWithStartDate', data.get('medicationRequestDescription') + ' (' + data.get('medicationRequestPeriodDueDate') + ')')"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestId",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestId', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.id').replace(\"MedicationRequest/\",\"\").split(\"/\").get(0))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestDoNotPerform",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestDoNotPerform', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.doNotPerform'))"
+                        ]
+                      },
+                      {
+                        "name": "reverseMedicationRequestDoNotPerform",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('reverseMedicationRequestDoNotPerform', medicationRequestDoNotPerform ? 'false' : 'true')"
+                        ]
+                      },
+                      {
+                        "name": "visibility",
+                        "condition": "true",
+                        "priority": 2,
+                        "actions": [
+                          "data.put('visibility', (data.get('reverseMedicationRequestDoNotPerform') and data.get('medicationRequestStatus') == 'draft')  ? 'false' : 'true')"
+                        ]
+                      },
+                      {
+                        "name": "clickable",
+                        "condition": "true",
+                        "priority": 2,
+                        "actions": [
+                          "data.put('clickable', data.get('medicationRequestStatus') != 'completed' ? 'true' : 'false')"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestFor",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestFor', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.subject.reference'))"
+                        ]
+                      },
+                      {
+                        "name": "medicationRequestQuestionnaireId",
+                        "condition": "true",
+                        "actions": [
+                          "data.put('medicationRequestQuestionnaireId', fhirPath.extractValue(MedicationRequest, 'MedicationRequest.supportingInformation.reference'))"
+                        ]
+                      }
+                    ],
+                    "views": [
+                      {
+                        "viewType": "BUTTON",
+                        "smallSized": "true",
+                        "text": "@{medicationRequestDescriptionWithStartDate}",
+                        "status": "@{medicationRequestStatusColorCode}",
+                        "clickable": "@{clickable}",
+                        "enabled": "@{patientActive}",
+                        "actions": [
+                          {
+                            "trigger": "ON_CLICK",
+                            "workflow": "LAUNCH_QUESTIONNAIRE",
+                            "questionnaire": {
+                              "id": "@{medicationRequestQuestionnaireId}",
+                              "title": "@{medicationRequestDescription}",
+                              "saveButtonText": "Save",
+                              "medicationRequestId": "@{medicationRequestId}",
+                              "resourceIdentifier": "@{medicationRequestFor}",
+                              "planDefinitions": [
+                                "231ef3a0-fbc1-41b6-b80d-2c004af6719a"
+                              ]
+                            },
+                            "params": [
+                              {
+                                "paramType": "PREPOPULATE",
+                                "linkId": "c1d8fed1-ff36-43b6-8061-22561154b13b",
+                                "dataType": "STRING",
+                                "key": "medicationRequestId",
+                                "value": "@{medicationRequestId}"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
